@@ -75,7 +75,7 @@
 <br />
 
 ## 7. 💁‍♂️ 프로젝트 팀원
-|Backend|Frontend|
-|:---:|:---:|
+|Backend|Backend|Backend|
+|:---:|:---:|:---:|
 | ![](https://github.com/yoonhyojin.png?size=120) | ![](https://github.com/SangHyun-e.png?size=120) | ![](https://github.com/Shinjunhoon.png?size=120) |
 |[윤효진](https://github.com/yoonhyojin)|[천상현](https://github.com/SangHyun-e)|[신정훈](https://github.com/Shinjunhoon)|
