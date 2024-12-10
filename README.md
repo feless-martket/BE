@@ -31,9 +31,14 @@
 <br />
 
 ## 2. 주요 기능
+- 로그인 및 회원가입:
+  - 카카오 연동을 통한 로그인, 회원가입 가능.
+  -  아이디, 비밀번호 찾기 기능.
+    
 - 상품 리스트 및 검색:
   - 신선식품, 가공식품, 생활용품 등의 카테고리 제공.
   - 키워드 검색 및 필터링 기능.
+  - 급상승 검색어 리스트 제공.
   
 - 상품 상세 페이지:
   - 상품 설명, 리뷰, 가격, 배송 정보 제공.
@@ -49,7 +54,8 @@
 
 - 사용자 편의 기능:
   - 최근 본 상품, 찜 목록 제공.
-  - 간편 재주문 기능 지원.
+  - 교환 및 환불 문의 기능.
+    
 
 <br />
 
@@ -92,21 +98,18 @@
 ## 6. 🛠️ 디렉토리 구조
 ```plaintext
 project/
-├── public/
-│   ├── index.html           # HTML 템플릿 파일
-│   └── favicon.ico          # 아이콘 파일
-├── src/
-│   ├── assets/              # 이미지, 폰트 등 정적 파일
-│   ├── components/          # 재사용 가능한 UI 컴포넌트
-│   ├── hooks/               # 커스텀 훅 모음
-│   ├── pages/               # 각 페이지별 컴포넌트
-│   ├── App.js               # 메인 애플리케이션 컴포넌트
-│   ├── index.js             # 엔트리 포인트 파일
-│   ├── index.css            # 전역 css 파일
-│   ├── firebaseConfig.js    # firebase 인스턴스 초기화 파일
-│   package-lock.json    # 정확한 종속성 버전이 기록된 파일로, 일관된 빌드를 보장
-│   package.json         # 프로젝트 종속성 및 스크립트 정의
+├── controller/
+│   ├── UserController          # 
+│   └── ProductContoller          # 
+├── service/
+│   ├── 
+│   ├── 
+│   ├── 
+│   ├── 
+├── repositroty/
+├── .env
 ├── .gitignore               # Git 무시 파일 목록
+├── build.gradle
 └── README.md                # 프로젝트 개요 및 사용법
 ```
 
@@ -121,7 +124,7 @@ project/
 
 <br />
 
-## 8. 🧑🏻‍💻 브랜치 전략 (Branch Strategy)
+## 8. 🧑🏻‍💻 브랜치 전략 (Branch Strategy)  -> 수정 필요
 우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
 
 - Main Branch
