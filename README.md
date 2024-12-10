@@ -142,8 +142,9 @@ project/
 ## 10. 💁‍♂️ 프로젝트 팀원 및 역할 분담
 |Backend|Backend|Backend|
 |:---:|:---:|:---:|
-| ![](https://github.com/yoonhyojin.png?size=120) | ![](https://github.com/SangHyun-e.png?size=120) | ![](https://github.com/Shinjunhoon.png?size=120) |
-|[윤효진](https://github.com/yoonhyojin)|[천상현](https://github.com/SangHyun-e)|[신정훈](https://github.com/Shinjunhoon)|
+| ![](https://github.com/yoonhyojin.png?size=120) | ![](https://github.com/SangHyun-e.png?size=120) | ![](https://github.com/Shinjunhoon.png?size=120) | ![](https://github.com/HongHJ0225.png?size=120) |
+|[윤효진](https://github.com/yoonhyojin)|[천상현](https://github.com/SangHyun-e)|[신정훈](https://github.com/Shinjunhoon)|[홍혁진](https://github.com/HongHJ0225)|
+
 
 
 
