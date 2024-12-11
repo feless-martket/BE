@@ -3,7 +3,7 @@
 
 
 ## Backend - Reamd.me  ✅
-
+[<img src="https://img.shields.io/badge/-notion-blue?style=flat&logo=google-chrome&logoColor=white" />](https://www.notion.so/softsquarededu/555bd4a05f084ed3bdaabe8c4a14fe06)
 [<img src="https://img.shields.io/badge/프로젝트 기간-2024.12.09~2025.01.31-green?style=flat&logo=&logoColor=white" />]()
 
 </div> 
@@ -62,9 +62,9 @@
 <br />
 
 ## 4. 🗂 APIs
-작성한 API는 아래에서 확인할 수 있습니다.
+작성한 API는 노션에서 확인할 수 있습니다.
 
-👉🏻 [API 바로보기](/backend/APIs.md)
+👉🏻 [API 바로보기](https://www.notion.so/softsquarededu/555bd4a05f084ed3bdaabe8c4a14fe06)
 
 
 <br />
@@ -140,8 +140,8 @@ project/
 <br/>
 
 ## 10. 💁‍♂️ 프로젝트 팀원 및 역할 분담
-|Backend|Backend|Backend|
-|:---:|:---:|:---:|
+|Backend|Backend|Backend|Backend|
+|:---:|:---:|:---:|:---:|
 | ![](https://github.com/yoonhyojin.png?size=120) | ![](https://github.com/SangHyun-e.png?size=120) | ![](https://github.com/Shinjunhoon.png?size=120) | ![](https://github.com/HongHJ0225.png?size=120) |
 |[윤효진](https://github.com/yoonhyojin)|[천상현](https://github.com/SangHyun-e)|[신정훈](https://github.com/Shinjunhoon)|[홍혁진](https://github.com/HongHJ0225)|
 
