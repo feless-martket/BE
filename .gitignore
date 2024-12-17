@@ -1,5 +1,5 @@
 HELP.md
-.envgit rm --cached .env
+.env
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
