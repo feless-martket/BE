@@ -35,8 +35,8 @@ public class Orders {
     Payment payment;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    @JoinColumn(name = "memeber_id")
+    Member member;
 
     Integer totalPrice;
 

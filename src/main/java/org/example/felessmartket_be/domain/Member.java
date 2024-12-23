@@ -3,6 +3,8 @@ package org.example.felessmartket_be.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,15 +24,17 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "memeber_id")
     Long id;
     String name;
     String password;
     String phoneNumber;
+
+    @Column(unique = true)
     String email;
     String address;
     String userStatus; // enum
@@ -38,13 +42,13 @@ public class User {
     LocalDateTime updated_at;
     LocalDateTime deleted_at;
 
-    @OneToOne(mappedBy = "user", optional = false)
+    @OneToOne(mappedBy = "member", optional = false)
     Cart cart;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     List<Orders> orderList;
 
-    public User(String name, String password, String phoneNumber) {
+    public Member(String name, String password, String phoneNumber) {
         this.name = name;
         this.password = password;
         this.phoneNumber = phoneNumber;
