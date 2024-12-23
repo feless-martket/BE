@@ -28,12 +28,18 @@ public class Cart {
     Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    User user;
+    @JoinColumn(name = "member_id")
+    Member member;
 
     @OneToMany(mappedBy = "cart")
     List<CartItem> cartItem;
 
     Integer quantity;
     Integer price;
+
+    public Cart(Member member, Integer quantity, Integer price) {
+        this.member = member;
+        this.quantity = quantity;
+        this.price = price;
+    }
 }
