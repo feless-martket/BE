@@ -12,13 +12,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class Product {
 
     @Id
@@ -34,4 +38,13 @@ public class Product {
     @Enumerated(EnumType.STRING)
     Category category;
     String imgURL;
+
+    public Product(String name, Integer price, String description, Integer quantity, Category category, String imgURL){
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.quantity = quantity;
+        this.category = category;
+        this.imgURL = imgURL;
+    }
 }
