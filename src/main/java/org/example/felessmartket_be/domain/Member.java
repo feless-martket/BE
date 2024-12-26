@@ -1,6 +1,7 @@
 package org.example.felessmartket_be.domain;
 
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 
@@ -24,15 +26,17 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
+@Setter
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "memeber_id")
     Long id;
+    String userId;
     String name;
     String password;
-    String phoneNumber;
+    String phone;
 
     @Column(unique = true)
     String email;
@@ -48,9 +52,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Orders> orderList;
 
-    public Member(String name, String password, String phoneNumber) {
-        this.name = name;
+    public Member(String name, String password, String phoneNumber, String email) {
+        this.userId = name;
         this.password = password;
-        this.phoneNumber = phoneNumber;
+        this.phone = phoneNumber;
+        this.email = email;
     }
 }

@@ -34,5 +34,4 @@ public class Product {
     @Enumerated(EnumType.STRING)
     Category category;
     String imgURL;
-
 }

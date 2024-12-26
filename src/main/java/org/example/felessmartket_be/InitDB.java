@@ -44,16 +44,17 @@ public class InitDB {
 */
 
 
-            for(int i = 1; i <= 20; i++) {
-                Member member = userCreate("a" + i, "1" + i, "1" + i);
+            for(int i = 1; i < 10; i++) {
+                Member member = userCreate( i + "abc", "1" + i, "1" + i, i + "a@naver.com" );
                 Cart cart = cartCreate(member, i, i);
+
                 em.persist(member);
                 em.persist(cart);
             }
         }
 
-        public static Member userCreate(String name, String password, String phoneNumber) {
-            return new Member(name, password, phoneNumber);
+        public static Member userCreate(String name, String password, String phoneNumber, String email) {
+            return new Member(name, password, phoneNumber, email);
         }
 
         public static Cart cartCreate(Member member, Integer quantity, Integer price) {
