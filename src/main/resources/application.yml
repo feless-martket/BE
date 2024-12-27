@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:33066/felessmarket?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: user
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

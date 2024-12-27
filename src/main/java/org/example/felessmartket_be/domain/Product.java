@@ -35,16 +35,16 @@ public class Product {
     Integer quantity;
     ProductStatus productStatus;
 
-    @Enumerated(EnumType.STRING)
-    Category category;
+
+    String category;
     String imgURL;
 
-    public Product(String name, Integer price, String description, Integer quantity, Category category, String imgURL){
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.quantity = quantity;
-        this.category = category;
-        this.imgURL = imgURL;
-    }
+//    public Product(String name, Integer price, String description, Integer quantity, Category category, String imgURL){
+//        this.name = name;
+//        this.price = price;
+//        this.description = description;
+//        this.quantity = quantity;
+//        this.category = category;
+//        this.imgURL = imgURL;
+//    }
 }
