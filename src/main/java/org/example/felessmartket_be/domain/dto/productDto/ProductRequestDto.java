@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.example.felessmartket_be.domain.Category;
 import org.example.felessmartket_be.domain.Product;
 import org.example.felessmartket_be.domain.ProductStatus;
 
@@ -31,7 +30,7 @@ public class ProductRequestDto {
             productRequestDto.getDescription(),
             productRequestDto.getPrice(),
             productRequestDto.getQuantity(),
-            productRequestDto.getProductStatus(),
+            ProductStatus.available,
             productRequestDto.getCategory(),
             productRequestDto.getImgURL()
         );
