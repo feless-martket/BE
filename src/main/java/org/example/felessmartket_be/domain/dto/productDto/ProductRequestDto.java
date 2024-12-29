@@ -1,5 +1,6 @@
 package org.example.felessmartket_be.domain.dto.productDto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,10 @@ public class ProductRequestDto {
     Integer price;
     Integer quantity;
     ProductStatus productStatus;
+
     String category;
+
+    @JsonProperty("image")
     String imgURL;
 
 

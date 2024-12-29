@@ -3,6 +3,8 @@
 //
 //import jakarta.annotation.PostConstruct;
 //import jakarta.persistence.EntityManager;
+//import java.time.LocalDateTime;
+//import java.time.format.DateTimeFormatter;
 //import lombok.RequiredArgsConstructor;
 //import org.example.felessmartket_be.domain.Cart;
 //import org.example.felessmartket_be.domain.Category;
@@ -10,12 +12,11 @@
 //import org.example.felessmartket_be.domain.Product;
 //import org.springframework.stereotype.Component;
 //import org.springframework.transaction.annotation.Transactional;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
 //
 //@Component
 //@RequiredArgsConstructor
 //public class InitDB {
+//
 //    private final InitService initService;
 //
 //    @PostConstruct
@@ -26,7 +27,7 @@
 //    @Component
 //    @Transactional
 //    @RequiredArgsConstructor
-//    static class InitService{
+//    static class InitService {
 //
 //        private final EntityManager em;
 //
@@ -44,8 +45,8 @@
 //            LocalDate startDate = LocalDate.now().plusDays(1);
 //            LocalDate endDate = LocalDate.now().plusDays(10);
 //*/
-//            for(int i = 1; i < 10; i++) {
-//                Member member = userCreate( i + "abc", "1" + i, "1" + i, i + "a@naver.com" );
+//            for (int i = 1; i < 10; i++) {
+//                Member member = userCreate(i + "abc", "1" + i, "1" + i, i + "a@naver.com");
 //                Cart cart = cartCreate(member, i, i);
 //
 //                em.persist(member);
@@ -67,7 +68,8 @@
 //            }
 //        }
 //
-//        public static Member userCreate(String name, String password, String phoneNumber, String email) {
+//        public static Member userCreate(String name, String password, String phoneNumber,
+//            String email) {
 //            return new Member(name, password, phoneNumber, email);
 //        }
 //
@@ -75,8 +77,9 @@
 //            return new Cart(member, quantity, price);
 //        }
 //
-//        public static Product productCreate(String name, Integer price, String description, Integer quantity, Category category, String imgURL){
-//            return new Product(name, price, description,quantity,category,imgURL);
+//        public static Product productCreate(String name, Integer price, String description,
+//            Integer quantity, Category category, String imgURL) {
+//            return new Product(name, price, description, quantity, category, imgURL);
 //        }
 //    }
 //}
