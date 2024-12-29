@@ -28,8 +28,8 @@ public class ProductService {
         String imageUrl = saveImageFromBase64(productRequestDto.getImgURL());
 
         Product product = ProductRequestDto.of(productRequestDto);
-        product.setImgURL(imageUrl);  // imgURL을 설정
-        log.info("imageUrl {}:", imageUrl);
+        product.setImgURL(imageUrl);
+        log.info("imageUrl {}:", imageUrl); //로그 추가
 
         Product savedProduct = productRepository.save(product);
 
@@ -64,7 +64,7 @@ public class ProductService {
         }
 
         // 저장된 파일의 URL 반환 (URL 경로 예: "/uploads/파일명")
-        System.out.println("Saved image URL: " + "/uploads/" + uniqueFilename);  // 로그 추가
+        log.info("Saved image URL: " + "/uploads/" + uniqueFilename);  // 로그 추가
         return "/uploads/" + uniqueFilename;
 
         //추후 MultipartFile 방식으로 전환
