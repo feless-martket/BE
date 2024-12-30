@@ -1,12 +1,8 @@
 package org.example.felessmartket_be.domain;
 
 public enum Category {
-    vegetable,
+    vegetable(),
     fruit,
-
     dailyNecessities,
-
     electronicDevices
-
-
 }

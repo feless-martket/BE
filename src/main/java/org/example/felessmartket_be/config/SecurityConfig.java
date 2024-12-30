@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/**").permitAll()
                 .requestMatchers("/users/email/**").permitAll()
                 .requestMatchers("/users/id/**").permitAll()
+                .requestMatchers("/product/save/**").permitAll()
 //                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
         );
