@@ -1,5 +1,6 @@
 package org.example.felessmartket_be.config;
 
+import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,18 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//            .authorizeHttpRequests(auth -> auth
+//                .anyRequest().permitAll() // 모든 요청을 허용
+//            )
+//            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+//            .cors(cors -> cors.disable()); // CORS 비활성화
+//
+//        return http.build();
+//    }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -49,6 +62,7 @@ public class SecurityConfig {
                 .requestMatchers("/users/**").permitAll()
                 .requestMatchers("/users/email/**").permitAll()
                 .requestMatchers("/users/id/**").permitAll()
+                .requestMatchers("/search/**").permitAll()
 //                .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
         );
@@ -70,7 +84,8 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-        corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3001"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addExposedHeader("*");

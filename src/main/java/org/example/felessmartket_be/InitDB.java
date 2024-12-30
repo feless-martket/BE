@@ -55,7 +55,19 @@ public class InitDB {
             Category[] categories = Category.values();
             for (int i = 1; i <= 10; i++) {
                 Product product = productCreate(
-                    "Product " + i,             // 상품 이름
+                    "Product" + i,             // 상품 이름
+                    i * 1000,                   // 상품 가격
+                    "Description for product " + i, // 상품 설명
+                    i * 10,                      // 수량
+                    categories[i % categories.length], // 카테고리 순환
+                    "https://example.com/product" + i + ".jpg" // 이미지 URL
+                );
+
+                em.persist(product); // 상품 객체를 영속성 컨텍스트에 추가
+            }
+            for (int i = 1; i <= 10; i++) {
+                Product product = productCreate(
+                    "member" + i,             // 상품 이름
                     i * 1000,                   // 상품 가격
                     "Description for product " + i, // 상품 설명
                     i * 10,                      // 수량
