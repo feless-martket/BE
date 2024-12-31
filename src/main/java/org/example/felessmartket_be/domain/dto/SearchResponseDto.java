@@ -19,7 +19,7 @@ public class SearchResponseDto {
     Integer price;
     Integer quantity;
     ProductStatus productStatus;
-    Category category;
+    String category;
     String imgURL;
 
     public static SearchResponseDto from(Product product) {
