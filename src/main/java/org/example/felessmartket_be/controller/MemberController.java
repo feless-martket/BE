@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.example.felessmartket_be.domain.Member;
+import org.example.felessmartket_be.domain.dto.EmailVerificationResult;
 import org.example.felessmartket_be.domain.dto.MemberRequestDto;
 import org.example.felessmartket_be.domain.dto.MemberResponseDto;
+import org.example.felessmartket_be.domain.dto.SingleResponseDto;
 import org.example.felessmartket_be.repository.MemberRepository;
 import org.example.felessmartket_be.service.MemberService;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,6 @@ public class MemberController {
     @GetMapping("/email")
     public ResponseEntity<Boolean> validateEmail(@RequestParam(value = "e") String email) {
         return ResponseEntity.ok(memberService.checkEmailDuplicate(email));
-        // 이메일 중복 체크
         // true - 중복되는 이메일 있음
         // false - 중복되는 이메일 없음
     }
@@ -49,6 +50,18 @@ public class MemberController {
     public ResponseEntity<Boolean> validateID(@RequestParam(value = "id") String userId) {
         return ResponseEntity.ok(memberService.checkIdDuplicate(userId));
         // 이메일과 동일
+    }
+
+    @PostMapping("/email/verification-requests")
+    public ResponseEntity<Boolean> sendMessage(@RequestParam("e") @Valid String email) {
+        memberService.sendCodeToEmail(email);
+        return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/email/verification")
+    public ResponseEntity<EmailVerificationResult> verificationEmail(@RequestParam("e") @Valid String email, @RequestParam("code") String authCode) {
+        EmailVerificationResult response = memberService.verifiedCode(email, authCode);
+        return ResponseEntity.ok(response);
     }
 
 
