@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'com.auth0:java-jwt:4.2.1' // JWT 생성/검증
     implementation 'org.springframework.boot:spring-boot-starter-validation' // 유효성 검증
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2' // Swagger
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'

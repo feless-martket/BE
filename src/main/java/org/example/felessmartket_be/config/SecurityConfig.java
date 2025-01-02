@@ -51,6 +51,13 @@ public class SecurityConfig {
             .requestMatchers("/users/id/**").permitAll()
             .requestMatchers("/search/**").permitAll()
             .requestMatchers("/product/save/**").permitAll()
+            .requestMatchers(
+                "/swagger-ui/**",
+                "/v3/api-docs/**",
+                "/v3/api-docs.yaml",
+                "/v3/api-docs/**",
+                "/v3/api-docs/swagger-config"
+            ).permitAll()
             .anyRequest().authenticated()
         );
 
