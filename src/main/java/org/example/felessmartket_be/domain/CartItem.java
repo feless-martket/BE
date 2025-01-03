@@ -14,9 +14,11 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -35,10 +37,17 @@ public class CartItem {
     @JoinColumn(name = "cart_id")
     Cart cart;
 
-    @OneToOne
-    @JoinColumn
-    OrderItem orderItem;
+    Integer qauntity;
 
-    public void addCartItem(){
+    public CartItem createCartItem(Cart cart, Product product, Integer qauntity) {
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
+        cartItem.setQauntity(qauntity);
+        return cartItem;
+    }
+
+    public void addQuantity(Integer quantity){
+        this.qauntity += quantity;
     }
 }

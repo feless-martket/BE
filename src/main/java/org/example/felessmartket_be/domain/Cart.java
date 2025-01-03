@@ -15,11 +15,13 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Cart {
 
@@ -34,12 +36,10 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     List<CartItem> cartItem;
 
-    Integer quantity;
-    Integer price;
-
-    public Cart(Member member, Integer quantity, Integer price) {
-        this.member = member;
-        this.quantity = quantity;
-        this.price = price;
+    // 장바구니 생성
+    public Cart createCart(Member member) {
+        Cart cart = new Cart();
+        cart.setMember(member);
+        return cart;
     }
 }

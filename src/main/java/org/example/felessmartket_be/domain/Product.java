@@ -7,6 +7,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +35,6 @@ public class Product {
     Integer quantity;
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
-
 
     String category;
     String imgURL; //추후 MultipartFile 방식으로 전환
