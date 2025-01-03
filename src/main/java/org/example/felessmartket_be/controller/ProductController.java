@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequestMapping("product")
+@RequestMapping("/product")
 @RestController
 public class ProductController {
 
@@ -36,7 +36,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/productList")
     public ResponseEntity<List<Product>> getProductByCategory(
         @RequestParam(value = "category") String category) {
         List<Product> products = productService.getProductByCategory(category);
