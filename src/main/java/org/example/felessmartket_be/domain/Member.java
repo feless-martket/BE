@@ -1,6 +1,5 @@
 package org.example.felessmartket_be.domain;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,12 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 
@@ -24,15 +25,17 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
+@Setter
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "memeber_id")
     Long id;
+    String username;
     String name;
     String password;
-    String phoneNumber;
+    String phone;
 
     @Column(unique = true)
     String email;
@@ -48,9 +51,19 @@ public class Member {
     @OneToMany(mappedBy = "member")
     List<Orders> orderList;
 
-    public Member(String name, String password, String phoneNumber) {
-        this.name = name;
+    public Member(String username, String password, String phoneNumber, String email) {
+        this.username = username;
         this.password = password;
-        this.phoneNumber = phoneNumber;
+        this.phone = phoneNumber;
+        this.email = email;
+    }
+    @PrePersist
+    public void prePersist() {
+        if (this.cart == null) {
+            this.cart = new Cart();
+            this.cart.setMember(this);  // 회원에 연결된 장바구니 설정
+            this.cart.setCartItem(null);   // 기본 값 설정
+        }
     }
 }
+

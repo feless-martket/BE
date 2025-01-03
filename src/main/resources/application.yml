@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:33066/felessmarket?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: user
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -12,3 +12,24 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: true
+  data:
+    redis:
+      mail:
+        host: localhost
+        port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gurwls842898@gmail.com
+    password: fxzu oece rkfz davh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connection-timeout: 5000
+          timeout: 5000
+          write-timeout: 5000
+        auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
