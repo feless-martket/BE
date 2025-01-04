@@ -1,18 +1,12 @@
 package org.example.felessmartket_be.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.example.felessmartket_be.domain.Category;
 import org.example.felessmartket_be.domain.Product;
-import org.example.felessmartket_be.domain.dto.productDto.ProductRequestDto;
 import org.example.felessmartket_be.domain.dto.productDto.ProductResponseDto;
 import org.example.felessmartket_be.exception.CustomException;
 import org.example.felessmartket_be.exception.ExceptionType;
@@ -57,6 +51,8 @@ public class ProductService {
     }
 
 
-
-
+    // 카테고리를 통한 상품 리스트 조회
+//    public List<Product> getProductByCategory(Category category) {
+//        return productRepository.findByCategoryIgnoreCase(category);
+//    }
 }

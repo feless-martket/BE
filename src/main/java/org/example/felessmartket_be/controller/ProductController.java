@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.felessmartket_be.domain.Category;
+import org.example.felessmartket_be.domain.Product;
 import org.example.felessmartket_be.domain.dto.productDto.ProductRequestDto;
 import org.example.felessmartket_be.domain.dto.productDto.ProductResponseDto;
 import org.example.felessmartket_be.service.ProductService;
@@ -14,11 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequestMapping("/product")
+@RequestMapping("product")
 @RestController
 public class ProductController {
 
@@ -44,5 +46,14 @@ public class ProductController {
             ChildrenCategory);
         return ResponseEntity.ok(products);
     }
+
+
+//    @GetMapping("/productList")
+//    public ResponseEntity<List<Product>> getProductByCategory(
+//        @RequestParam(value = "category") Category category) {
+//        List<Product> products = productService.getProductByCategory(category);
+//        return ResponseEntity.ok(products);
+//    }
+
 
 }
