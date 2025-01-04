@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:33066/felessmarket?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: user
-    password: 1234
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -20,8 +20,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: gurwls842898@gmail.com
-    password: fxzu oece rkfz davh
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:

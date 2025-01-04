@@ -51,7 +51,7 @@ public class ProductService {
     }
 
 
-    // 카테고리를 통한 상품 리스트 조회
+// 카테고리를 통한 상품 리스트 조회
 //    public List<Product> getProductByCategory(Category category) {
 //        return productRepository.findByCategoryIgnoreCase(category);
 //    }
