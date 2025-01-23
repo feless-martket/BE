@@ -25,6 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByMainCategory(MainCategory mainCategory, Pageable pageable);
     Page<Product> findBySubCategory(SubCategory subCategory, Pageable pageable);
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
 //    List<Product> findById(Long productId);
 //    @Query("SELECT MAX(p.id) FROM Product p")
 //    Long findMaxProductId();

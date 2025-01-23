@@ -43,7 +43,8 @@ public class PaymentService {
 
     private final RedisService redisService;
     private final long authCodeExpirationMillis = 300000;
-    private final String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+    @Value("${WIDGET_SECRET_KEY}")
+    private String widgetSecretKey;
     private final OrdersService ordersService;
     private final PaymentRepository paymentRepository;
     private final ShippingRepository shippingRepository;
