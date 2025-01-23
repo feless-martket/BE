@@ -34,7 +34,14 @@ public class Product {
     String name;
     String description;
     Integer price;
+    @Enumerated(EnumType.STRING)
+    Delivery delivery;
     Integer quantity;
+    Integer discount;
+
+    @Enumerated(EnumType.STRING)
+    DiscountStatus discountStatus;
+
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
 
@@ -50,5 +57,4 @@ public class Product {
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url", length = 1000) // 길이를 1000으로 설정
     private List<String> imageUrls = new ArrayList<>();
-
 }
