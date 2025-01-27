@@ -33,6 +33,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     // 상품 좋아요 수가 많은 순으로 상품 조회(JPQL 사용, LEFT JOIN으로 좋아요가 NULL인 상품도 포함)
-    @Query("SELECT p FROM Product p LEFT JOIN p.likeItems l " + "GROUP BY p.id " + "ORDER BY COUNT(1) DESC")
-    List<Product> findAllOrderbyLikeCountDest();
+    @Query("SELECT p FROM Product p LEFT JOIN p.likeItems l " + "GROUP BY p  " + "ORDER BY COUNT(l) DESC")
+    List<Product> findTopLikedProducts(Pageable pageable);
 }
