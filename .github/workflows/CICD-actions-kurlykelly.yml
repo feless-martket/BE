@@ -1,6 +1,6 @@
 name: CICD
 
-  # master 브랜치에 push, PR 이벤트 발생시 동작.*
+# master 브랜치에 push, PR 이벤트 발생시 동작
 on:
   push:
     branches: [ "main" ]
@@ -11,148 +11,139 @@ permissions:
   contents: read
 
 jobs:
-     build:
-       runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-       steps:
-         # (1) 프로그램 빌드 (Java 빌드) 1) Java 및 Docker 빌드를 위한 환경 설정*
-           - uses: actions/checkout@v3
-           - name: Set up JDK 17
-             uses: actions/setup-java@v3
-             with:
-               java-version: '17'
-               distribution: 'temurin'
+    steps:
+      # (1) 프로그램 빌드 (Java 빌드)
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-           # (1) 프로그램 빌드 (Java 빌드) 2) Java 빌드를 위한 ./gradlew 파일 권한 변경*
-           - name: Run chmod to make gradlew executable
-             run: chmod +x ./gradlew
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
 
-           # (1) 프로그램 빌드 (Java 빌드) 3) Java Gradle 빌드*
-           - name: Spring Boot Build
-             run: ./gradlew clean build -x test
+      - name: Spring Boot Build
+        run: ./gradlew clean build -x test
 
-           # (2) Docker 이미지 빌드 1) Docker Hub 에 Login*
-           - name: Login to DockerHub
-             uses: docker/login-action@v2
-             with:
-               username: ${{ secrets.DOCKERHUB_USERNAME }}
-               password: ${{ secrets.DOCKERHUB_PW }}
+      # Docker Hub에 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PW }}
 
-           - name: Print current directory and files
-             run: |
-               echo "Current directory: $GITHUB_WORKSPACE"
-               ls -al
+      - name: Print current directory and files
+        run: |
+          echo "Current directory: $GITHUB_WORKSPACE"
+          ls -al
 
-           # (2) Docker 이미지 빌드 2) DockerFile 을 기반으로 Docker Image 빌드*
-           - name: docker image build
-             run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server .
+      # Docker 이미지 빌드 및 Push
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server .
 
-           # (2) Docker 이미지 빌드 3) Docker Hub 에 빌드된 이미지 push*
-           - name: docker Hub push
-             run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
-  # deploy Job: CD 파트 (Blue-Green Deploy)*
-     deploy:
-       needs: build
-       runs-on: ubuntu-latest
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-       steps:
-         # CD: 배포 전, GitHub IP를 EC2 보안 그룹에 추가 (SSH 접근 허용)*
-              - name: get GitHub IP
-                id: ip
-                uses: haythem/public-ip@v1.2
+    steps:
+      # GitHub IP를 AWS 보안 그룹에 추가
+      - name: get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
 
-              - name: Configure AWS Credentials
-                uses: aws-actions/configure-aws-credentials@v1
-                with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ap-northeast-2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-              - name: Add GitHub IP to AWS
-                run: |
-                  aws ec2 authorize-security-group-ingress \
-                    --group-id ${{ secrets.AWS_SG_ID }} \
-                    --protocol tcp --port 22 \
-                    --cidr ${{ steps.ip.outputs.ipv4 }}/32
-                  
-                   # (2) 로컬에서 /env 호출 → CURRENT_UPSTREAM 파악 → GitHub Actions Env 설정
-              - name: Determine current upstream
-                run: |
-                  STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.KURLYKELLY_SERVER_IP }}/env")
-                  echo "STATUS=$STATUS"
-                  
-                  if [ "$STATUS" = "200" ]; then
-                    CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.KURLYKELLY_SERVER_IP }}/env")
-                  else
-                    CURRENT_UPSTREAM="green"
-                  fi
-                  
-                  echo "CURRENT_UPSTREAM=$CURRENT_UPSTREAM" >> $GITHUB_ENV
-                  
-                  if [ "$CURRENT_UPSTREAM" = "blue" ]; then
-                    echo "CURRENT_PORT=8080" >> $GITHUB_ENV
-                    echo "STOPPED_PORT=8081" >> $GITHUB_ENV
-                    echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
-                  else
-                    echo "CURRENT_PORT=8081" >> $GITHUB_ENV
-                    echo "STOPPED_PORT=8080" >> $GITHUB_ENV
-                    echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
-                  fi
+      - name: Add GitHub IP to AWS
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-         # (3) SSH 액션: 새 프로필(blue or green) 컨테이너 띄우기*
-              - name: Deploy new container
-                uses: appleboy/ssh-action@master
-                with:
-                  host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-                  username: ${{ secrets.EC2_USERNAME }}
-                  password: ${{ secrets.EC2_PASSWORD }}  *# 비밀번호 SSH 인증*
-                  port: 22
-                  #script_stop: true*
-                  script: |
-                    echo "TARGET_UPSTREAM=${TARGET_UPSTREAM}"
-                    echo "Pull latest image..."
-                    sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
-                    
-                    echo "Run docker-compose for ${TARGET_UPSTREAM}..."
-                    sudo docker-compose -f docker-compose-${TARGET_UPSTREAM}.yml up -d
-                    
-                    # (옵션) 새 컨테이너 헬스체크 로직 등 추가 가능
+      # 현재 상태 확인 및 환경 변수 설정
+      - name: Determine current upstream
+        run: |
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.KURLYKELLY_SERVER_IP }}/env")
+          echo "STATUS=$STATUS"
 
-         # (4) SSH 액션: Nginx Upstream 변경*
-              - name: Change nginx upstream
-                uses: appleboy/ssh-action@master
-                with:
-                  host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-                  username: ${{ secrets.EC2_USERNAME }}
-                  password: ${{ secrets.EC2_PASSWORD }}  *# 비밀번호 SSH 인증*
-                  port: 22
-                  #script_stop: true*
-                  script: |
-                    echo "Switching Nginx to ${TARGET_UPSTREAM}..."
-                    sudo docker exec -i nginxserver bash -c 'echo "set \$service_url '${TARGET_UPSTREAM}';" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
+          if [ "$STATUS" = "200" ]; then
+            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.KURLYKELLY_SERVER_IP }}/env")
+          else
+            CURRENT_UPSTREAM="green"
+          fi
 
-         # (5) 기존 서버 stop & remove*
-            - name: Stop current server
-              uses: appleboy/ssh-action@master
-              with:
-                host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-                username: ${{ secrets.EC2_USERNAME }}
-                password: ${{ secrets.EC2_PASSWORD }}  *# 비밀번호 SSH 인증*
-                port: 22
-                #script_stop: true*
-                script: |
-                  echo "Stop old container: ${CURRENT_UPSTREAM}"
-                  sudo docker stop ${CURRENT_UPSTREAM} || true
-                  sudo docker rm ${CURRENT_UPSTREAM} || true
+          echo "CURRENT_UPSTREAM=$CURRENT_UPSTREAM" >> $GITHUB_ENV
 
-         # (6) 배포 끝나면 보안 그룹에서 GitHub IP 제거*
-            - name: Remove IP FROM security group
-              run: |
-                aws ec2 revoke-security-group-ingress \
-                  --group-id ${{ secrets.AWS_SG_ID }} \
-                  --protocol tcp --port 22 \
-                  --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          if [ "$CURRENT_UPSTREAM" = "blue" ]; then
+            echo "CURRENT_PORT=8080" >> $GITHUB_ENV
+            echo "STOPPED_PORT=8081" >> $GITHUB_ENV
+            echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
+          else
+            echo "CURRENT_PORT=8081" >> $GITHUB_ENV
+            echo "STOPPED_PORT=8080" >> $GITHUB_ENV
+            echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
+          fi
+
+      # 새 컨테이너 실행
+      - name: Deploy new container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          script: |
+            echo "Pull latest image..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+
+            echo "Run docker-compose for ${TARGET_UPSTREAM}..."
+            sudo docker-compose -f docker-compose-${TARGET_UPSTREAM}.yml up -d
+
+      # Nginx Upstream 변경
+      - name: Change nginx upstream
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          script: |
+            echo "Switching Nginx to ${TARGET_UPSTREAM}..."
+            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url '${TARGET_UPSTREAM}';" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
+
+      # 기존 서버 중지 및 제거
+      - name: Stop current server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          script: |
+            echo "Stop old container: ${CURRENT_UPSTREAM}"
+            sudo docker stop ${CURRENT_UPSTREAM} || true
+            sudo docker rm ${CURRENT_UPSTREAM} || true
+
+      # 배포 후 보안 그룹에서 IP 제거
+      - name: Remove IP FROM security group
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
   #
 #      #  CD: SSH 접속 → Blue-Green 무중단 배포
 #      # (1) 현재 구동 중인 서버(blue / green) 확인 및 환경 변수 설정
