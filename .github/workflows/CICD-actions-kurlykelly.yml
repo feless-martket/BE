@@ -72,6 +72,17 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
+      - name: Debug GITHUB_ENV
+        run: |
+          echo "Checking GITHUB_ENV file..."
+          echo "File path: $GITHUB_ENV"
+          ls -l $GITHUB_ENV
+
+      - name: Test writing to GITHUB_ENV
+        run: |
+          echo "TEST_VARIABLE=TestValue" >> $GITHUB_ENV
+          echo "Environment variable written successfully."    
+
       # (B) 현재 떠 있는 컨테이너(blue/green) 확인
       - name: Check current container
         uses: appleboy/ssh-action@master
