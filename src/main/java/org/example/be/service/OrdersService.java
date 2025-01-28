@@ -80,7 +80,7 @@ public class OrdersService {
     public OrderList mappingOrderList(Orders orders) {
          return OrderListResponseDto.OrderList.builder()
              .products(getProducts(orders))
-             .memberInfos(getMemberInfo(orders))
+             .memberInfo(getMemberInfo(orders))
              .tossOrderID(orders.getTossOrderId())
              .paymentMethod(getPaymentMethod(orders))
              .totalPrice(orders.getTotalPrice())
