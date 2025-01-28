@@ -1,5 +1,6 @@
 package org.example.be.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +14,13 @@ import org.example.be.domain.OrderItem;
 import org.example.be.domain.Orders;
 import org.example.be.domain.Payment;
 import org.example.be.domain.Product;
+import org.example.be.domain.Shipping;
 import org.example.be.domain.dto.paymentDto.OrderItemRequestDto;
 import org.example.be.domain.dto.paymentDto.OrderItemRequestDto.OrderItemDto;
 import org.example.be.domain.dto.paymentDto.OrderListResponseDto;
+import org.example.be.domain.dto.paymentDto.OrderListResponseDto.MemberInfo;
 import org.example.be.domain.dto.paymentDto.OrderListResponseDto.OrderList;
+import org.example.be.domain.dto.paymentDto.OrderListResponseDto.ProductInfo;
 import org.example.be.repository.OrderItemRepository;
 import org.example.be.repository.OrdersRepository;
 import org.example.be.repository.PaymentRepository;
@@ -66,35 +70,59 @@ public class OrdersService {
         return products;
     }
 
-
-    public List<OrderList> createOrdersList(Member member) {
-        List<Orders> ordersList = ordersRepository.findOrdersByMember(member);
+    public List<OrderList> createOrdersList(Member member, String period) {
+        LocalDateTime startDate = computeStartDate(period);
+        List<Orders> ordersList = ordersRepository.findByMemberAndOrderDateBetween(member, startDate, LocalDateTime.now());
         return ordersList.stream().map(this::mappingOrderList).toList();
     }
 
 
     public OrderList mappingOrderList(Orders orders) {
          return OrderListResponseDto.OrderList.builder()
-//            .productName(getProductName(orders))
-            .tossOrderID(orders.getTossOrderId())
-            .paymentMethod(getPaymentMethod(orders))
-            .totalPrice(orders.getTotalPrice())
-            .orderStatus("결제완료")
-            .build();
+             .products(getProducts(orders))
+             .memberInfos(getMemberInfo(orders))
+             .tossOrderID(orders.getTossOrderId())
+             .paymentMethod(getPaymentMethod(orders))
+             .totalPrice(orders.getTotalPrice())
+             .orderStatus("결제완료")
+             .orderDate(orders.getOrderDate())
+             .build();
     }
 
-//    public String getProductName(Orders orders) {
-//        List<OrderItem> orderItems = orderItemRepository.findByOrder(orders);
-//        for (OrderItem orderItem : orderItems) {
-//            Product product = productRepository.findById(orderItem.getProduct().getId()).orElseThrow(() -> new IllegalArgumentException("Product가 존재하지 않음"));
-//        }
-//        return product.getName();
-//    }
+    public List<ProductInfo> getProducts(Orders orders) {
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(orders);
+        List<ProductInfo> productInfos = new ArrayList<>();
+        for (OrderItem orderItem : orderItems) {
+            productInfos.add(ProductInfo.from(
+                productRepository.findById(orderItem.getProduct().getId())
+                    .orElseThrow(() -> new RuntimeException("product 존재하지 않음")),
+                orderItem.getQuantity())
+            );
+        }
+        return productInfos;
+    }
+
+    public MemberInfo getMemberInfo(Orders orders) {
+        Member member = orders.getMember();
+        Shipping shipping = orders.getShipping();
+        return MemberInfo.from(member, shipping);
+    }
 
     public String getPaymentMethod(Orders orders) {
         Payment payment = paymentRepository.findByOrder(orders);
         return payment.getPaymentMethod();
     }
+
+    private LocalDateTime computeStartDate(String period) {
+        LocalDateTime now = LocalDateTime.now();
+        return switch (period) {
+            case "6개월" -> now.minusMonths(6);
+            case "1년" -> now.minusYears(1);
+            case "3년" -> now.minusYears(3);
+            default -> now.minusMonths(3);
+        };
+    }
+
 
 
 

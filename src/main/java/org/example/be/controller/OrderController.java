@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -46,14 +47,15 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> checkOrderList(Principal principal) {
+    public ResponseEntity<?> checkOrderList(@RequestParam(value = "period") String period, Principal principal) {
         Member member = extractMemberFromPrincipal(principal);
         if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(null);
         }
+
         OrderListResponseDto orderListResponseDto = new OrderListResponseDto();
-        orderListResponseDto.setOrderLists(ordersService.createOrdersList(member));
+        orderListResponseDto.setOrderLists(ordersService.createOrdersList(member, period));
         return ResponseEntity.ok(orderListResponseDto);
     }
 

@@ -145,13 +145,16 @@ public class PaymentService {
 
     public void mappingPaymentInfo(Orders orders, OrderItemRequestDto request) {
         Payment payment = paymentRepository.findByOrder(orders);
-        payment.setTotalAmount(request.getTotalPrice());
+        orders.setOrderDate(LocalDateTime.now());
         payment.setPaymentDate(LocalDateTime.now());
+        payment.setTotalAmount(request.getTotalPrice());
         payment.setTossOrderId(request.getTossOrderId());
         payment.setPaymentMethod(request.getPaymentMethod());
         payment.setPaymentStatus(PaymentStatus.COMPLETED);
         payment.setUsedPoint(request.getUsedPoint());
+        ordersRepository.save(orders);
         paymentRepository.save(payment);
+
     }
 
     private void mappingShippingInfo(OrderItemRequestDto request, Orders orders) {
