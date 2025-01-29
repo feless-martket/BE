@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # GitHub IP를 AWS 보안 그룹에 추가
+      # A) GitHub Actions Runner의 퍼블릭 IP를 확인하여, AWS 보안 그룹에 22번 포트 열기
       - name: get GitHub IP
         id: ip
         uses: haythem/public-ip@v1.2
@@ -72,19 +72,8 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-      - name: Debug GITHUB_ENV
-        run: |
-          echo "Checking GITHUB_ENV file..."
-          echo "File path: $GITHUB_ENV"
-          ls -l $GITHUB_ENV
-
-      - name: Test writing to GITHUB_ENV
-        run: |
-          echo "TEST_VARIABLE=TestValue" >> $GITHUB_ENV
-          echo "Environment variable written successfully."    
-
-      # (B) 현재 떠 있는 컨테이너(blue/green) 확인
-      - name: Check current container
+      # B) **한 번의 SSH 액션** 안에서 Blue/Green 로직 처리
+      - name: Blue-Green Deploy in one script
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.KURLYKELLY_SERVER_IP }}
@@ -92,62 +81,35 @@ jobs:
           password: ${{ secrets.EC2_PASSWORD }}
           port: 22
           script: |
-            # blue 컨테이너가 떠 있는지 확인
+            # 1) 현재 돌고 있는 컨테이너 파악 (blue? green? 없으면 green으로 가정)
             if [ "$(sudo docker ps -q -f name=blue)" ]; then
-              echo "CURRENT_UPSTREAM=blue" >> $GITHUB_ENV
-              echo "TARGET_UPSTREAM=green" >> $GITHUB_ENV
-              echo "CURRENT_PORT=8080" >> $GITHUB_ENV
-              echo "STOPPED_PORT=8081" >> $GITHUB_ENV
+              CURRENT_UPSTREAM="blue"
+              TARGET_UPSTREAM="green"
             else
-              # green이 떠 있다고 가정 (또는 아무것도 없을 때도 이쪽으로)
-              echo "CURRENT_UPSTREAM=green" >> $GITHUB_ENV
-              echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
-              echo "CURRENT_PORT=8081" >> $GITHUB_ENV
-              echo "STOPPED_PORT=8080" >> $GITHUB_ENV
+              CURRENT_UPSTREAM="green"
+              TARGET_UPSTREAM="blue"
             fi
-
-      # (C) 새 컨테이너(blue or green) 배포
-      - name: Deploy new container
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          port: 22
-          script: |
-            echo "TARGET_UPSTREAM=${TARGET_UPSTREAM}"
-            echo "Pull latest image..."
+            
+            echo "[INFO] CURRENT_UPSTREAM=$CURRENT_UPSTREAM, TARGET_UPSTREAM=$TARGET_UPSTREAM"
+            
+            # 2) 최신 이미지 pull
+            echo "[INFO] Pull latest Docker image..."
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+            
+            # 3) docker-compose 로 새 컨테이너 실행
+            echo "[INFO] Run docker-compose for $TARGET_UPSTREAM..."
+            sudo docker-compose -f docker-compose-$TARGET_UPSTREAM.yml up -d
+            
+            # 4) Nginx upstream 변경
+            echo "[INFO] Switching Nginx to $TARGET_UPSTREAM..."
+            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url '$TARGET_UPSTREAM';" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
+            
+            # 5) 이전 컨테이너 중지 & 제거
+            echo "[INFO] Stop old container: $CURRENT_UPSTREAM"
+            sudo docker stop $CURRENT_UPSTREAM || true
+            sudo docker rm $CURRENT_UPSTREAM || true
 
-            echo "Run docker-compose for ${TARGET_UPSTREAM}..."
-            sudo docker-compose -f docker-compose-${TARGET_UPSTREAM}.yml up -d
-
-      # (D) Nginx Upstream 변경
-      - name: Change nginx upstream
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          port: 22
-          script: |
-            echo "Switching Nginx to ${TARGET_UPSTREAM}..."
-            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url '${TARGET_UPSTREAM}';" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
-
-      # (E) 기존 컨테이너 종료
-      - name: Stop current server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          port: 22
-          script: |
-            echo "Stop old container: ${CURRENT_UPSTREAM}"
-            sudo docker stop ${CURRENT_UPSTREAM} || true
-            sudo docker rm ${CURRENT_UPSTREAM} || true
-
-      # (F) 배포 끝나면 보안 그룹에서 GitHub IP 제거
+      # C) 배포 후 보안 그룹에서 IP 제거 (닫아두기)
       - name: Remove IP FROM security group
         run: |
           aws ec2 revoke-security-group-ingress \
