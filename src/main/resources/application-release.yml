@@ -59,9 +59,9 @@ spring:
       max-request-size: 300MB  # 최대 요청 크기
       max-file-size: 50MB  # 최대 파일 크기
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/felessmarket
+    username: test
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -73,7 +73,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     generate-ddl: true
   jwt:
-    secret: ${JWT_SECRET_KEY}
+    secret: OLV1c41581odSLJJbnqijHlfYG/2jZz1AVV0W8cgfHU=
   data:
     redis:
       host: localhost
@@ -81,8 +81,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${SPRING_MAIL_USERNAME}
-    password: ${SPRING_MAIL_PASSWORD}
+    username: gurwls842898@gmail.com
+    password: 'fxzu oece rkfz davh'
     properties:
       mail:
         smtp:
@@ -98,8 +98,8 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: ${your_access_key}
-      secret-key: ${your_secret_key}
+      access-key: AKIAZKDIC44MACVYJZ56
+      secret-key: my9adLKK1sq3mltyAEhhMBQsJlJnrNUejpYS+yoO
     region:
       static: ap-northeast-2  # AWS 리전 설정
   s3:
