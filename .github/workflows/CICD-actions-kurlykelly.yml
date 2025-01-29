@@ -3,9 +3,9 @@ name: CICD
 # master 브랜치에 push, PR 이벤트 발생시 동작
 on:
   push:
-    branches: [ "release" ]
+    branches: ["release"]
   pull_request:
-    branches: [ "release" ]
+    branches: ["release"]
 
 permissions:
   contents: read
@@ -20,8 +20,8 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
 
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
@@ -43,7 +43,7 @@ jobs:
 
       # Docker 이미지 빌드 및 Push
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server .
+        run: docker build --build-arg SPRING_PROFILES_ACTIVE=release -t ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server .
 
       - name: docker Hub push
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
@@ -81,7 +81,7 @@ jobs:
           password: ${{ secrets.EC2_PASSWORD }}
           port: 22
           script: |
-            # 1) 현재 돌고 있는 컨테이너 파악 (blue? green? 없으면 green으로 가정)
+            # 1) 현재 컨테이너 확인
             if [ "$(sudo docker ps -q -f name=blue)" ]; then
               CURRENT_UPSTREAM="blue"
               TARGET_UPSTREAM="green"
@@ -89,25 +89,16 @@ jobs:
               CURRENT_UPSTREAM="green"
               TARGET_UPSTREAM="blue"
             fi
-            
+
             echo "[INFO] CURRENT_UPSTREAM=$CURRENT_UPSTREAM, TARGET_UPSTREAM=$TARGET_UPSTREAM"
-            
+
             # 2) 최신 이미지 pull
             echo "[INFO] Pull latest Docker image..."
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
-            
-            # 3) docker-compose 로 새 컨테이너 실행
+
+            # 3) docker-compose 실행 (release 프로필 사용)
             echo "[INFO] Run docker-compose for $TARGET_UPSTREAM..."
-            sudo docker-compose -f docker-compose-$TARGET_UPSTREAM.yml up -d
-            
-            # 4) Nginx upstream 변경
-            echo "[INFO] Switching Nginx to $TARGET_UPSTREAM..."
-            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url '$TARGET_UPSTREAM';" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
-            
-            # 5) 이전 컨테이너 중지 & 제거
-            echo "[INFO] Stop old container: $CURRENT_UPSTREAM"
-            sudo docker stop $CURRENT_UPSTREAM || true
-            sudo docker rm $CURRENT_UPSTREAM || true
+            SPRING_PROFILES_ACTIVE=release sudo docker-compose -f docker-compose-$TARGET_UPSTREAM.yml up -d
 
       # C) 배포 후 보안 그룹에서 IP 제거 (닫아두기)
       - name: Remove IP FROM security group
@@ -118,6 +109,7 @@ jobs:
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
   #
+
 #      #  CD: SSH 접속 → Blue-Green 무중단 배포
 #      # (1) 현재 구동 중인 서버(blue / green) 확인 및 환경 변수 설정
 #      - name: AWS EC2 Connection (Blue-Green Deploy)

@@ -3,6 +3,7 @@ HELP.md
 build/
 .gradle
 /src/main/resources/application-dev.yml
+/src/main/resources/application-release.yml
 
 #!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
