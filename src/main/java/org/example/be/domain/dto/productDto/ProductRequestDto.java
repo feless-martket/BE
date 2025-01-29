@@ -41,7 +41,7 @@ public class ProductRequestDto {
             productRequestDto.getQuantity(),
             productRequestDto.getDiscount(),
             productRequestDto.getDiscountstatus(),
-            ProductStatus.available,
+            productRequestDto.getProductStatus(),
             productRequestDto.getMainCategory(),
             productRequestDto.getSubCategory(),
             null,
