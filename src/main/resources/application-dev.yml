@@ -1,63 +1,10 @@
 spring:
-  profiles:
-    active: local
-    group:
-      local: local, common, secret
-      blue: blue, common, secret
-      green: green, common, secret
-
-server:
-  env: blue
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: local
-
-server:
-  port: 8080
-  serverAddress: localhost
-
-serverName: local_server
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: blue
-
-server:
-  port: 8080
-  serverAddress: 3.36.171.210
-
-serverName: blue_server
-
----
-
-spring:
-  config:
-    activate:
-      on-profile: green
-
-server:
-  port: 8081
-  serverAddress: 3.36.171.210
-
-serverName: green_server
-
----
-
-
-spring:
   servlet:
     multipart:
-      enabled: true  # 멀티파트 파일 업로드를 활성화
-      location: c:\\upload  # 파일이 저장될 경로 (Windows에서 백슬래시 사용)
-      max-request-size: 300MB  # 최대 요청 크기
-      max-file-size: 50MB  # 최대 파일 크기
+      enabled: true # 멀티파트 파일 업로드를 활성화
+      location: c:\\upload # 파일이 저장될 경로 (Windows에서 백슬래시 사용)
+      max-request-size: 300MB # 최대 요청 크기
+      max-file-size: 50MB # 최대 파일 크기
   datasource:
     url: ${MYSQL_URL}
     username: ${MYSQL_USER}
@@ -93,7 +40,7 @@ spring:
           connection-timeout: 5000
           timeout: 5000
           write-timeout: 5000
-        auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+        auth-code-expiration-millis: 1800000 # 30 * 60 * 1000 == 30분
 
 cloud:
   aws:
@@ -101,10 +48,9 @@ cloud:
       access-key: ${your_access_key}
       secret-key: ${your_secret_key}
     region:
-      static: ap-northeast-2  # AWS 리전 설정
+      static: ap-northeast-2 # AWS 리전 설정
   s3:
     bucket: marketkurry-bucket
     stack:
-      auto: false  # Auto 스택 설정
-
+      auto: false # Auto 스택 설정
 
