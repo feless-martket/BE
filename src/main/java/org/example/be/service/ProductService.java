@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -12,10 +13,14 @@ import org.example.be.domain.DiscountStatus;
 import org.example.be.domain.MainCategory;
 import org.example.be.domain.Product;
 import org.example.be.domain.SubCategory;
+import org.example.be.domain.dto.productDto.ProductRequestDto;
 import org.example.be.domain.dto.productDto.ProductResponseDto;
 import org.example.be.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -70,4 +75,55 @@ public class ProductService {
         return products.stream().map(ProductResponseDto::fromEntity).toList();
     }
 
+    // 좋아요 수가 많은 상위 N개의 상품을 조회하는 메서드
+    public List<ProductResponseDto> findBestLikedProducts(int limit) {
+        try {
+            if (limit < 1 || limit > 100) {
+                log.warn("limit paramter: {}", limit);
+                throw new RuntimeException("limit 파라미터는 1 이상 100 이하여야 합니다.");
+            }
+            Pageable pageable = PageRequest.of(0, limit);
+            List<Product> products = productRepository.findTopLikedProducts(pageable);
+
+            if (products.isEmpty()) {
+                throw new RuntimeException("인기 상품을 찾을 수 없습니다.");
+            }
+
+            return products.stream()
+                .map(ProductResponseDto::fromEntity)
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("예기치 않은 오류가 발생했습니다.", e);
+        }
+    }
+//    public Page<ProductResponseDto> getProductsByDiscountStatus(DiscountStatus discountStatus, PageRequest pageRequest) {
+//        Page<Product> productsPage = productRepository.findByDiscountStatus(discountStatus, pageRequest);
+//        if (productsPage.isEmpty()) {
+//            throw new IllegalArgumentException("discountStatus에 맞는 상품을 찾을 수 없습니다:" + discountStatus);
+//        }
+//        return productsPage.map(ProductResponseDto::fromEntity);
+//    }
+
+    public Page<ProductResponseDto> getProductsByDiscountStatus(
+        DiscountStatus discountStatus,
+        int page,
+        int size,
+        Sort.Direction sortDirection
+    ) {
+        // 가격 기준으로 정렬 (오름차순 또는 내림차순)
+        Sort sort = Sort.by(sortDirection, "price");
+        log.info("sort = ${}", sort);
+
+        // 페이지 정보 생성
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // discountStatus가 null이 아니면 해당 상태로 조회
+        // null이면 전체 조회(참고용)
+        Page<Product> productPage;
+        productPage = productRepository.findByDiscountStatus(discountStatus, pageable);
+
+
+        // Page<Product> -> Page<ProductResponseDto>
+        return productPage.map(ProductResponseDto::fromEntity);
+    }
 }
