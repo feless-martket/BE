@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.example.be.domain.Delivery;
 import org.example.be.domain.MainCategory;
 import org.example.be.domain.Product;
 import org.example.be.domain.ProductStatus;
@@ -28,8 +29,9 @@ public class ProductResponseDto {
     ProductStatus productStatus;
     MainCategory mainCategory;
     SubCategory subCategory;
-    String delivery;
+    Delivery delivery;
     List<String> imageUrls; // 여러 이미지 URL 저장 가능
+    long likeCount; // 좋아요 수 추가
 
 
     public static ProductResponseDto fromEntity(Product product) {
@@ -40,10 +42,12 @@ public class ProductResponseDto {
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .discount(product.getDiscount())
+            .delivery(product.getDelivery())
             .productStatus(product.getProductStatus())
             .mainCategory(product.getMainCategory())
             .subCategory(product.getSubCategory())
-                .imageUrls(product.getImageUrls())
+            .imageUrls(product.getImageUrls())
+            .likeCount(product.getLikeItems().size())
             .build();
     }
 }

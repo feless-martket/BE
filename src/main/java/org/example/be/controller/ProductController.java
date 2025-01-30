@@ -1,5 +1,7 @@
 package org.example.be.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,7 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+
 //    @GetMapping("/random")
 //    public ResponseEntity<List<Product>> getRandomProducts() {
 //        List<Product> randomProducts = productService.getRandomProducts();
@@ -73,6 +76,12 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDto>> findTop5ByOrderByPriceDesc() {
         List<ProductResponseDto> products = productService.findTop10ByOrderByPriceDesc();
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/best-liked")
+    public ResponseEntity<List<ProductResponseDto>> getBestLikedProducts(@RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        List<ProductResponseDto> bestLikedProducts = productService.findBestLikedProducts(limit);
+        return ResponseEntity.ok(bestLikedProducts);
     }
 
     @GetMapping("/discount")
