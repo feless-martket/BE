@@ -22,18 +22,17 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findByNameContainingIgnoreCase(String keyword);
 
     List<Product> findByDiscountStatus(DiscountStatus discountStatus);
+    Page<Product> findByDiscountStatus(DiscountStatus discountStatus, Pageable pageable);
     List<Product> findBySubCategory(SubCategory subCategory);
     List<Product> findByMainCategory(MainCategory mainCategory);
     @Query("SELECT p FROM Product p JOIN FETCH p.imageUrls WHERE p.id = :id")
     Optional<Product> findByIdWithImages(@Param("id") Long id);
-
     List<Product> findTop10ByOrderByPriceDesc();
     Page<Product> findByMainCategory(MainCategory mainCategory, Pageable pageable);
     Page<Product> findBySubCategory(SubCategory subCategory, Pageable pageable);
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
-
-
-
-
+    // 상품 좋아요 수가 많은 순으로 상품 조회(JPQL 사용, LEFT JOIN으로 좋아요가 NULL인 상품도 포함)
+    @Query("SELECT p FROM Product p LEFT JOIN p.likeItems l " + "GROUP BY p  " + "ORDER BY COUNT(l) DESC")
+    List<Product> findTopLikedProducts(Pageable pageable);
 }

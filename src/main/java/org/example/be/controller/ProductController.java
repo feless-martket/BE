@@ -1,5 +1,7 @@
 package org.example.be.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.example.be.domain.dto.productDto.ProductResponseDto;
 import org.example.be.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +76,21 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDto>> findTop5ByOrderByPriceDesc() {
         List<ProductResponseDto> products = productService.findTop10ByOrderByPriceDesc();
         return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/best-liked")
+    public ResponseEntity<List<ProductResponseDto>> getBestLikedProducts(@RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        List<ProductResponseDto> bestLikedProducts = productService.findBestLikedProducts(limit);
+        return ResponseEntity.ok(bestLikedProducts);
+    }
+
+    @GetMapping("/discount")
+    public Page<ProductResponseDto> getProductsByDiscountStatus(
+        @RequestParam DiscountStatus discountStatus,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+        return productService.getProductsByDiscountStatus(discountStatus, page, size, direction);
     }
 
 }

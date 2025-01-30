@@ -31,6 +31,7 @@ public class ProductResponseDto {
     SubCategory subCategory;
     Delivery delivery;
     List<String> imageUrls; // 여러 이미지 URL 저장 가능
+    long likeCount; // 좋아요 수 추가
 
 
     public static ProductResponseDto fromEntity(Product product) {
@@ -45,7 +46,8 @@ public class ProductResponseDto {
             .productStatus(product.getProductStatus())
             .mainCategory(product.getMainCategory())
             .subCategory(product.getSubCategory())
-                .imageUrls(product.getImageUrls())
+            .imageUrls(product.getImageUrls())
+            .likeCount(product.getLikeItems().size())
             .build();
     }
 }
