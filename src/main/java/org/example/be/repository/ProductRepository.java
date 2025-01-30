@@ -22,6 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findByNameContainingIgnoreCase(String keyword);
 
     List<Product> findByDiscountStatus(DiscountStatus discountStatus);
+    Page<Product> findByDiscountStatus(DiscountStatus discountStatus, Pageable pageable);
     List<Product> findBySubCategory(SubCategory subCategory);
     List<Product> findByMainCategory(MainCategory mainCategory);
     @Query("SELECT p FROM Product p JOIN FETCH p.imageUrls WHERE p.id = :id")
