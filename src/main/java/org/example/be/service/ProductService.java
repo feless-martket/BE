@@ -19,6 +19,8 @@ import org.example.be.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -93,5 +95,35 @@ public class ProductService {
         } catch (Exception e) {
             throw new RuntimeException("예기치 않은 오류가 발생했습니다.", e);
         }
+    }
+//    public Page<ProductResponseDto> getProductsByDiscountStatus(DiscountStatus discountStatus, PageRequest pageRequest) {
+//        Page<Product> productsPage = productRepository.findByDiscountStatus(discountStatus, pageRequest);
+//        if (productsPage.isEmpty()) {
+//            throw new IllegalArgumentException("discountStatus에 맞는 상품을 찾을 수 없습니다:" + discountStatus);
+//        }
+//        return productsPage.map(ProductResponseDto::fromEntity);
+//    }
+
+    public Page<ProductResponseDto> getProductsByDiscountStatus(
+        DiscountStatus discountStatus,
+        int page,
+        int size,
+        Sort.Direction sortDirection
+    ) {
+        // 가격 기준으로 정렬 (오름차순 또는 내림차순)
+        Sort sort = Sort.by(sortDirection, "price");
+        log.info("sort = ${}", sort);
+
+        // 페이지 정보 생성
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        // discountStatus가 null이 아니면 해당 상태로 조회
+        // null이면 전체 조회(참고용)
+        Page<Product> productPage;
+        productPage = productRepository.findByDiscountStatus(discountStatus, pageable);
+
+
+        // Page<Product> -> Page<ProductResponseDto>
+        return productPage.map(ProductResponseDto::fromEntity);
     }
 }

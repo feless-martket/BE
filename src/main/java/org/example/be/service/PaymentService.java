@@ -43,7 +43,8 @@ public class PaymentService {
 
     private final RedisService redisService;
     private final long authCodeExpirationMillis = 300000;
-    private final String widgetSecretKey = "test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6";
+    @Value("${WIDGET_SECRET_KEY}")
+    private String widgetSecretKey;
     private final OrdersService ordersService;
     private final PaymentRepository paymentRepository;
     private final ShippingRepository shippingRepository;
@@ -144,13 +145,16 @@ public class PaymentService {
 
     public void mappingPaymentInfo(Orders orders, OrderItemRequestDto request) {
         Payment payment = paymentRepository.findByOrder(orders);
-        payment.setTotalAmount(request.getTotalPrice());
+        orders.setOrderDate(LocalDateTime.now());
         payment.setPaymentDate(LocalDateTime.now());
+        payment.setTotalAmount(request.getTotalPrice());
         payment.setTossOrderId(request.getTossOrderId());
         payment.setPaymentMethod(request.getPaymentMethod());
         payment.setPaymentStatus(PaymentStatus.COMPLETED);
         payment.setUsedPoint(request.getUsedPoint());
+        ordersRepository.save(orders);
         paymentRepository.save(payment);
+
     }
 
     private void mappingShippingInfo(OrderItemRequestDto request, Orders orders) {
