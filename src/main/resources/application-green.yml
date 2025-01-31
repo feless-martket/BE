@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  app-blue:
+    image: ${DOCKERHUB_USERNAME}/kurlykelly_server:latest
+    container_name: app-green
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=green
+      - MYSQL_URL=${MYSQL_URL}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - REDIS_HOST=${REDIS_HOST}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-green
+    env_file:
+      - .env
+    volumes:
+      - mysql-green-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-green-data:

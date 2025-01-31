@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: blue
+  # 공통 설정과 동일하되 운영 환경에 맞게 수정
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST} # EC2 내부 Redis 주소
+
+server:
+  port: 8081

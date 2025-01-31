@@ -67,8 +67,10 @@ public class SecurityConfig {
 //            .requestMatchers("/product/getProduct/**").permitAll()
             .requestMatchers("/search/**").permitAll()
             .requestMatchers("/payments/**").permitAll()
+                .requestMatchers("/actuator/health").permitAll() // API
 
-            // 찜한 상품 API 접근 가능
+
+                // 찜한 상품 API 접근 가능
                 .requestMatchers("/like/**").permitAll()
 
             // Swagger 문서 접근 가능
