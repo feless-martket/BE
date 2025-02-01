@@ -105,12 +105,12 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
             # 4) 동일 대상의 이전 컨테이너가 있다면 중지 및 삭제
-            docker stop app-$TARGET || true
-            docker rm app-$TARGET || true
+            docker stop $TARGET || true
+            docker rm $TARGET || true
 
             # 5) 새 컨테이너 실행 
             #    -> DB 및 기타 환경변수는 EC2에 직접 업로드한 .env 파일에서 로드
-            docker run -d --name app-$TARGET -p ${TARGET_PORT}:${TARGET_PORT} --env-file .env -e SPRING_PROFILES_ACTIVE=$TARGET ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+            docker run -d --name $TARGET -p ${TARGET_PORT}:${TARGET_PORT} --env-file .env -e SPRING_PROFILES_ACTIVE=$TARGET ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
             # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
             for i in {1..10}; do
@@ -132,8 +132,8 @@ jobs:
 
             # 9) 헬스체크 실패 시, 로그 출력 후 새 컨테이너 제거
             echo "새 컨테이너 헬스체크 실패"
-            docker logs app-$TARGET
-            docker rm -f app-$TARGET
+            docker logs $TARGET
+            docker rm -f $TARGET
             exit 1
 
       # C) GitHub Actions Runner의 IP를 AWS 보안 그룹에서 제거
