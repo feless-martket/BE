@@ -19,7 +19,7 @@ public enum SubCategory {
     APPLE_PEAR("사과·배", MainCategory.FRUIT),
     CITRUS("감귤류", MainCategory.FRUIT),
     NUTS("견과류", MainCategory.FRUIT),
-    RICES("쌀, 잡곡", MainCategory.FRUIT),
+    RICES("쌀·잡곡", MainCategory.FRUIT),
     // 수산·해산·건어물
     FISH("생선류", MainCategory.SEAFOOD),
     INVERTEBRATE("오징어·낙지·문어", MainCategory.SEAFOOD),
