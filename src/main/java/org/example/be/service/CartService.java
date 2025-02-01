@@ -134,7 +134,7 @@ public class CartService {
         System.out.println("[DEBUG] 수량 업데이트 완료: " + quantity);
     }
 
-    // 장바구니 삭제
+    // 장바구니 아이템 삭제
     public void deleteCartItem(Long cartItemId, String username) {
         Member member = memberRepository.findByUsername(username)
             .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
@@ -154,5 +154,13 @@ public class CartService {
         cartItemRepository.delete(cartItem);
         System.out.println("[DEBUG] 장바구니 아이템 삭제 완료: " + cartItemId);
     }
+
+//    public void deleteCart(Member member) {
+//        Cart cart = cartRepository.findByMember_Username(member.getUsername());
+//        if (cart != null) {
+//            cartRepository.delete(cart);
+//        }
+//    }
+
 
 }
