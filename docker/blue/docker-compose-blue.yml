@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  blue:
+    image: yoonhyojin1016/kurlykelly_server:latest
+    # image: ${DOCKERHUB_USERNAME}/kurlykelly_server:latest
+    container_name: blue
+    environment:
+      - SPRING_PROFILES_ACTIVE=blue
+      - MYSQL_URL_PROD=${MYSQL_URL_PROD}
+      - MYSQL_USER_PROD=${MYSQL_USER_PROD}
+      - MYSQL_PASSWORD_PROD=${MYSQL_PASSWORD_PROD}
+
+    ports:
+      - "8081:8081"
+    restart: always

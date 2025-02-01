@@ -1,15 +1,19 @@
 spring:
-  config:
-    activate:
-      on-profile: blue
-  # 공통 설정과 동일하되 운영 환경에 맞게 수정
+  profiles: blue
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
-  data:
-    redis:
-      host: ${REDIS_HOST} # EC2 내부 Redis 주소
+    # 프로덕션 DB 연결 정보 (환경변수로 주입)
+    url: ${MYSQL_URL_PROD}
+    username: ${MYSQL_USER_PROD}
+    password: ${MYSQL_PASSWORD_PROD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      # EC2(리눅스) 서버의 파일 업로드 경로
+      location: /var/upload
 
 server:
-  port: 8081
+  port: 8081 # Blue 인스턴스 전용 포트
+
+logging:
+  level:
+    root: INFO

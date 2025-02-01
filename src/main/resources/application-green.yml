@@ -1,38 +1,18 @@
-version: "3"
+spring:
+  profiles: green
+  datasource:
+    # 프로덕션 DB 연결 정보 (환경변수로 주입)
+    url: ${MYSQL_URL_PROD}
+    username: ${MYSQL_USER_PROD}
+    password: ${MYSQL_PASSWORD_PROD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      location: /var/upload
 
-services:
-  app-blue:
-    image: ${DOCKERHUB_USERNAME}/kurlykelly_server:latest
-    container_name: app-green
-    env_file:
-      - .env
-    environment:
-      - SPRING_PROFILES_ACTIVE=green
-      - MYSQL_URL=${MYSQL_URL}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - REDIS_HOST=${REDIS_HOST}
-      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-    ports:
-      - "8080:8080"
-    networks:
-      - app-network
+server:
+  port: 8082 # Green 인스턴스 전용 포트
 
-  db:
-    image: mysql:8.0
-    container_name: mysql-green
-    env_file:
-      - .env
-    volumes:
-      - mysql-green-data:/var/lib/mysql
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  mysql-green-data:
+logging:
+  level:
+    root: INFO

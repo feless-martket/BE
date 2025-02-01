@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class SearchService {
+public class       SearchService {
     private final ProductRepository productRepository;
 
     // 검색 초기화면
