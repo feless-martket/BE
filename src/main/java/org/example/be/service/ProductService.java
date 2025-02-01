@@ -3,6 +3,7 @@ package org.example.be.service;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -108,22 +109,18 @@ public class ProductService {
         DiscountStatus discountStatus,
         int page,
         int size,
+        String sortOption,
         Sort.Direction sortDirection
     ) {
-        // 가격 기준으로 정렬 (오름차순 또는 내림차순)
-        Sort sort = Sort.by(sortDirection, "price");
-        log.info("sort = ${}", sort);
+        String sortField;
+        if(Objects.equals(sortOption, "DISCOUNT")) sortField = "discount";
+        else sortField = "price";
 
-        // 페이지 정보 생성
+        // Sort 생성
+        Sort sort = Sort.by(sortDirection, sortField);
+        // Pageable 생성
         Pageable pageable = PageRequest.of(page, size, sort);
-
-        // discountStatus가 null이 아니면 해당 상태로 조회
-        // null이면 전체 조회(참고용)
-        Page<Product> productPage;
-        productPage = productRepository.findByDiscountStatus(discountStatus, pageable);
-
-
-        // Page<Product> -> Page<ProductResponseDto>
+        Page<Product> productPage = productRepository.findByDiscountStatus(discountStatus, pageable);
         return productPage.map(ProductResponseDto::fromEntity);
     }
 }

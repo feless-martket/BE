@@ -10,6 +10,7 @@ import org.example.be.domain.Orders;
 import org.example.be.domain.dto.paymentDto.OrderItemRequestDto;
 import org.example.be.domain.dto.paymentDto.OrdersRequestDto;
 import org.example.be.domain.dto.paymentDto.OrdersResponseDto;
+import org.example.be.service.CartService;
 import org.example.felessmartket_be.domain.dto.paymentDto.PaymentRequestDto;
 import org.example.be.service.OrdersService;
 import org.example.be.service.PaymentService;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final CartService cartService;
 
     @PostMapping("/save")
     public ResponseEntity<Map<String, Object>> OrderSave(@RequestBody OrdersRequestDto request) {
@@ -97,7 +99,9 @@ public class PaymentController {
         if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
+        log.info("member ${}", member);
         paymentService.savePayment(requestDto);
+//        cartService.deleteCart(member);
         return ResponseEntity.ok(Map.of("result", "success"));
     }
 
