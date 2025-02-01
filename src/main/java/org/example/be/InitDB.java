@@ -315,59 +315,58 @@ public class InitDB implements CommandLineRunner {
 
             // - 이름 :무안 햇 양파, 3kg(소)
             List<String> imgUrl32 = new ArrayList<>();
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A1title.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A11.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A12.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A13.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A14.png");
+            imgUrl32.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A1title.png");
+            imgUrl32.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A11.png");
+            imgUrl32.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A12.png");
+            imgUrl32.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A13.png");
+            imgUrl32.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%91%E1%85%A14.png");
 
 
 
             // - 이름 :산정마을 브로콜리 2kg
             List<String> imgUrl33 = new ArrayList<>();
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B5title.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B51.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B52.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B53.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B54.png");
+            imgUrl33.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B5title.png");
+            imgUrl33.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B51.png");
+            imgUrl33.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B52.png");
+            imgUrl33.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B53.png");
+            imgUrl33.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B54.png");
 
 
 
             // - 이름 :맛통령 국내산 파프리카 빨강 노랑 혼합, 파프리카 1kg
             List<String> imgUrl34 = new ArrayList<>();
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A1title.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A11.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A12.png");
+            imgUrl34.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A1title.png");
+            imgUrl34.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A11.png");
+            imgUrl34.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%91%E1%85%A1%E1%84%91%E1%85%B3%E1%84%85%E1%85%B5%E1%84%8F%E1%85%A12.png");
 
 
 
             //- 이름: **국내산 양배추 1통(3kg내외), 3kg,**
             List<String> imgUrl35 = new ArrayList<>();
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AEtitle.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE1.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE2.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE3.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE4.png");
+            imgUrl35.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AEtitle.png");
+            imgUrl35.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE1.png");
+            imgUrl35.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE2.png");
+            imgUrl35.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE3.png");
+            imgUrl35.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A3%E1%86%BC%E1%84%87%E1%85%A2%E1%84%8E%E1%85%AE4.png");
 
 
 
             // 이름: **방앗간청년 볶은 땅콩, 500g, 2개**
             List<String> imgUrl36 = new ArrayList<>();
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AAtitle.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA1.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA2.png");
-            imgUrl31.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA3.png");
+            imgUrl36.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AAtitle.png");
+            imgUrl36.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA1.png");
+            imgUrl36.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA2.png");
+            imgUrl36.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AB%E1%84%80%E1%85%AA3.png");
 
 
 
-//
-//            List<String> imgUrl37 = new ArrayList<>();
-//            imgUrl31.add("");
-//            imgUrl31.add("");
-//            imgUrl31.add("");
-//            imgUrl31.add("");
-//            imgUrl31.add("");
-//            imgUrl31.add("");
+
+            List<String> imgUrl37 = new ArrayList<>();
+            imgUrl37.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B5title.png");
+            imgUrl37.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B51.png");
+            imgUrl37.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B52.png");
+            imgUrl37.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B53.png");
+            imgUrl37.add("https://marketkurry-bucket.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8F%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B54.png");
 //
 //            List<String> imgUrl31 = new ArrayList<>();
 //            imgUrl31.add("");
@@ -517,10 +516,10 @@ public class InitDB implements CommandLineRunner {
             Product product27 = createProduct("  제주 생선 3종", 36900," 제주 생선 3종, 법성포 굴비 골라담기",Delivery.SELLER_DELIVERY,45,MainCategory.SEAFOOD,SubCategory.FISH,imgUrl27,null,null, ProductStatus.AVAILABLE);
             Product product28 = createProduct("진도 대파 700g", 3500," 제철 맞은 대파의 싱싱함 가득",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.ONION_VEGETABLE,imgUrl28,35,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
             Product product29 = createProduct("한끼 깐마늘 100g", 2000," 간편하게 사용하는 껍질 벗긴 마늘",Delivery.EARLY_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.ONION_VEGETABLE,imgUrl29,null,null, ProductStatus.AVAILABLE);
-            Product product30 = createProduct("땅끝 해날 쌀 10kg", 35000," 해남에서 온 건강한 밥맛",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.RICES,imgUrl30,null,null, ProductStatus.AVAILABLE);
-            Product product31 = createProduct("유기농 잡곡 귀리 500g", 6500," 우리 땅에서 자라난 슈퍼 푸드 유기농 잡곡 귀리",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.RICES,imgUrl31,35,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
-            Product product32 = createProduct("진도 대파 700g", 3500," 제철 맞은 대파의 싱싱함 가득",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.ONION_VEGETABLE,imgUrl28,35,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
-            Product product33 = createProduct("무안 햇 양파, 3kg(소)", 9800," 최상품 국내산 제철 맞은 싱싱한 양파",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.ONION_VEGETABLE,imgUrl32,10,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
+            Product product30 = createProduct("땅끝 해날 쌀 10kg", 35000," 해남에서 온 건강한 밥맛",Delivery.SELLER_DELIVERY,45,MainCategory.FRUIT,SubCategory.RICES,imgUrl30,null,null, ProductStatus.AVAILABLE);
+            Product product31 = createProduct("유기농 잡곡 귀리 500g", 6500," 우리 땅에서 자라난 슈퍼 푸드 유기농 잡곡 귀리",Delivery.SELLER_DELIVERY,45,MainCategory.FRUIT,SubCategory.RICES,imgUrl31,35,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
+            Product product32 = createProduct("무안 햇 양파, 3kg(소)", 9800," 최상품 국내산 제철 맞은 싱싱한 양파",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.ONION_VEGETABLE,imgUrl32,10,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
+            Product product33 = createProduct("산정마을 브로콜리 2kg", 15000," - 설명: 산지의 신선함 그대로 국내산 브로콜리",Delivery.SELLER_DELIVERY,45,MainCategory.VEGETABLE,SubCategory.SALAD_VEGETABLE,imgUrl33,35,DiscountStatus.WEEKEND_SPECIAL, ProductStatus.AVAILABLE);
 
 
 
