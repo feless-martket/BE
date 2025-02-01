@@ -11,14 +11,19 @@ public enum SubCategory {
     // 채소
     ROOT_VEGETABLE("고구마·감자·당근", MainCategory.VEGETABLE),
     LEAF_VEGETABLE("시금치·쌈채소·나물", MainCategory.VEGETABLE),
+    SALAD_VEGETABLE("브로콜리·파프리카·양배추", MainCategory.VEGETABLE),
+    ONION_VEGETABLE("양파·대파·마늘·배추", MainCategory.VEGETABLE),
     GREEN_VEGETABLE("오이·호박·고추", MainCategory.VEGETABLE),
 
     // 과일·견과·쌀
     APPLE_PEAR("사과·배", MainCategory.FRUIT),
     CITRUS("감귤류", MainCategory.FRUIT),
-
+    NUTS("견과류", MainCategory.FRUIT),
+    RICES("쌀, 잡곡", MainCategory.FRUIT),
     // 수산·해산·건어물
     FISH("생선류", MainCategory.SEAFOOD),
+    INVERTEBRATE("오징어·낙지·문어", MainCategory.SEAFOOD),
+    DRIED_FISH("멸치·황태·다시팩", MainCategory.SEAFOOD),
     SHELLFISH("조개류", MainCategory.SEAFOOD);
 
     private final String displayName;
