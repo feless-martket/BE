@@ -1,6 +1,6 @@
 name: CICD
 
-# release 브랜치에 push, PR 이벤트 발생시 동작
+# release 브랜치에 push, PR 이벤트 발생 시 동작
 on:
   push:
     branches: ["release"]
@@ -85,23 +85,28 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           password: ${{ secrets.EC2_PASSWORD }}
           port: 22
-          script: |                       
+          script: |
             # 1) 현재 실행 중인 컨테이너 확인 (이름이 blue 또는 green인 컨테이너)
             CURRENT_CONTAINER=$(docker ps --filter "name=blue\|green" --format "{{.Names}}")
             echo "현재 컨테이너: $CURRENT_CONTAINER"
-          
+            
             # 2) 새 배포 대상 결정 (Blue/Green 전환)
-            if [ "$CURRENT_CONTAINER" = "blue" ]; then
-              TARGET="green"
-              TARGET_PORT="8082"
-            else
+            if [ -z "$CURRENT_CONTAINER" ]; then
+              echo "현재 실행 중인 컨테이너가 없습니다. Blue/Green 배포를 초기화합니다."
               TARGET="blue"
               TARGET_PORT="8081"
+            else
+              if [ "$CURRENT_CONTAINER" = "blue" ]; then
+                TARGET="green"
+                TARGET_PORT="8082"
+              else
+                TARGET="blue"
+                TARGET_PORT="8081"
+              fi
             fi
             echo "새 컨테이너 배포 대상: $TARGET 환경, 포트: $TARGET_PORT"
-                      
-                      
-                      # 3) 최신 이미지 pull
+            
+            # 3) 최신 이미지 pull
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
             # 4) 동일 대상의 이전 컨테이너가 있다면 중지 및 삭제
