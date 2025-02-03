@@ -7,9 +7,9 @@ services:
     container_name: blue
     environment:
       - SPRING_PROFILES_ACTIVE=blue
-      - MYSQL_URL_PROD=${MYSQL_URL_PROD}
-      - MYSQL_USER_PROD=${MYSQL_USER_PROD}
-      - MYSQL_PASSWORD_PROD=${MYSQL_PASSWORD_PROD}
+      - MYSQL_URL=${MYSQL_URL}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
     ports:
       - "8081:8081"
