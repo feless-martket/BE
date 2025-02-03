@@ -124,7 +124,7 @@ jobs:
               -p ${TARGET_PORT}:${TARGET_PORT} \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=$TARGET \
-              -e SPRING_REDIS_HOST=redis \
+              -e SPRING_REDIS_HOST=redis-server \
               -e SPRING_REDIS_PORT=6379 \
               ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
