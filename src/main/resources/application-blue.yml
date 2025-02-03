@@ -4,9 +4,9 @@ spring:
       on-profile: blue
   datasource:
     # 프로덕션 DB 연결 정보 (환경변수로 주입)
-    url: ${MYSQL_URL_PROD}
-    username: ${MYSQL_USER_PROD}
-    password: ${MYSQL_PASSWORD_PROD}
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
