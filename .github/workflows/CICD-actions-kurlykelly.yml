@@ -76,6 +76,9 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
+      - name: List all files in workspace
+        run: find . -maxdepth 2 | sort
+
       - name: List nginx folder
         run: ls -al docker/nginx/
 
