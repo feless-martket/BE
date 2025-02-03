@@ -1,6 +1,5 @@
 name: CICD
 
-# release 브랜치에 push, PR 이벤트 발생 시 동작
 on:
   push:
     branches: ["release"]
@@ -77,7 +76,7 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-      # B) Blue/Green 배포: SSH 한 번의 액션에서 새 컨테이너 실행, 헬스체크, Nginx 업데이트, 이전 컨테이너 제거
+      # B) Blue/Green 배포 스크립트
       - name: Blue-Green Deploy in one script
         uses: appleboy/ssh-action@master
         with:
@@ -86,7 +85,7 @@ jobs:
           password: ${{ secrets.EC2_PASSWORD }}
           port: 22
           script: |
-            # 1) 현재 실행 중인 컨테이너 확인 (이름이 blue 또는 green인 컨테이너)
+            # 1) 현재 실행 중인 컨테이너 확인 (blue 또는 green)
             CURRENT_CONTAINER=$(docker ps --filter "name=blue\|green" --format "{{.Names}}")
             echo "현재 컨테이너: $CURRENT_CONTAINER"
             
@@ -104,8 +103,11 @@ jobs:
                 TARGET_PORT="8081"
               fi
             fi
-            echo "새 컨테이너 배포 대상: $TARGET 환경, 포트: $TARGET_PORT"
-            
+            echo "새 컨테이너 배포 대상: $TARGET, 포트: $TARGET_PORT"
+
+            # (추가) 혹시나 유저 정의 네트워크를 사용한다면, 없으면 생성
+            # docker network ls | grep my-bridge-network || docker network create my-bridge-network
+
             # 3) 최신 이미지 pull
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
@@ -113,18 +115,28 @@ jobs:
             docker stop $TARGET || true
             docker rm $TARGET || true
 
-            # 5) 새 컨테이너 실행 
-            #    -> DB 및 기타 환경변수는 EC2에 직접 업로드한 .env 파일에서 로드
-            docker run -d --name $TARGET -p ${TARGET_PORT}:${TARGET_PORT} --env-file .env -e SPRING_PROFILES_ACTIVE=$TARGET ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+            # 5) 새 컨테이너 실행
+            #    -> DB/환경변수는 .env에서 가져오고, Redis 관련 변수는 -e로 직접도 가능
+            #    -> --network 옵션으로 Redis와 동일 네트워크 사용(예: my-bridge-network)
+            docker run -d \
+              --name $TARGET \
+              --network my-bridge-network \ 
+              -p ${TARGET_PORT}:${TARGET_PORT} \
+              --env-file .env \
+              -e SPRING_PROFILES_ACTIVE=$TARGET \
+              -e SPRING_REDIS_HOST=redis \
+              -e SPRING_REDIS_PORT=6379 \
+              ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
 
             # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
             for i in {1..10}; do
               sleep 5
               if curl -s "http://localhost:${TARGET_PORT}/actuator/health" | grep "UP" ; then
                 echo "새 컨테이너 헬스체크 성공"
-                # 7) Nginx 프록시 포트 업데이트 (nginx.conf 파일의 proxy_pass 변경)
+                # 7) Nginx 프록시 포트 업데이트
                 sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:${TARGET_PORT}/" docker/nginx/nginx.conf
                 docker-compose -f docker/nginx/docker-compose-nginx.yml restart
+
                 # 8) 기존 컨테이너 중지 및 제거
                 if [ ! -z "$CURRENT_CONTAINER" ]; then
                   docker stop $CURRENT_CONTAINER
@@ -135,13 +147,13 @@ jobs:
               fi
             done
 
-            # 9) 헬스체크 실패 시, 로그 출력 후 새 컨테이너 제거
+            # 9) 헬스체크 실패 시 롤백 로직
             echo "새 컨테이너 헬스체크 실패"
             docker logs $TARGET
             docker rm -f $TARGET
             exit 1
 
-      # C) GitHub Actions Runner의 IP를 AWS 보안 그룹에서 제거
+      # C) GitHub Actions Runner IP를 AWS 보안 그룹에서 제거
       - name: Remove GitHub IP from AWS Security Group
         if: always()
         run: |
