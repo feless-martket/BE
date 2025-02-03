@@ -120,7 +120,7 @@ jobs:
             #    -> --network 옵션으로 Redis와 동일 네트워크 사용(예: my-bridge-network)
             docker run -d \
               --name $TARGET \
-              --network my-bridge-network \ 
+              --network my-bridge-network \
               -p ${TARGET_PORT}:${TARGET_PORT} \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=$TARGET \
