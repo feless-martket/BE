@@ -83,18 +83,18 @@ jobs:
       - name: List nginx folder
         run: ls -al docker/nginx/
 
-      # B) Nginx 설정 파일 전송
-      - name: Copy Nginx configuration files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-          username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
-          port: 22
-          source: "docker/nginx/*"
-          target: "~/docker/nginx/"
-          strip-components: 3         # 앞의 2개 폴더 (docker/nginx)를 제거
-          rm: true
+#      # B) Nginx 설정 파일 전송
+#      - name: Copy Nginx configuration files to server
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          password: ${{ secrets.EC2_PASSWORD }}
+#          port: 22
+#          source: "docker/nginx/*"
+#          target: "~/docker/nginx/"
+#          strip-components: 3         # 앞의 2개 폴더 (docker/nginx)를 제거
+#          rm: true
 
       # C) Blue/Green 배포 스크립트
       - name: Blue-Green Deploy in one script
