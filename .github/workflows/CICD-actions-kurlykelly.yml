@@ -129,7 +129,158 @@ jobs:
                 if [ ! -z "$CURRENT_CONTAINER" ]; then
                   docker stop $CURRENT_CONTAINER
                   docker rm $CURRENT_CONTAINER
+                finame: CICD
+
+# release 브랜치에 push, PR 이벤트 발생 시 동작
+on:
+  push:
+    branches: ["release"]
+  pull_request:
+    branches: ["release"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # (1) 코드 체크아웃
+      - uses: actions/checkout@v3
+
+      # (2) JDK 17 설정
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      # (3) gradlew 실행 권한 부여
+      - name: Run chmod to make gradlew executable
+        run: chmod +x ./gradlew
+
+      # (4) Spring Boot 빌드 (테스트 제외)
+      - name: Spring Boot Build
+        run: ./gradlew clean build -x test
+
+      # (5) Docker Hub 로그인
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PW }}
+
+      - name: Print current directory and files
+        run: |
+          echo "Current directory: $GITHUB_WORKSPACE"
+          ls -al
+
+      # (6) Docker 이미지 빌드 (latest 태그 포함)
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest .
+
+      # (7) Docker 이미지 Push
+      - name: docker Hub push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # A) GitHub Actions Runner의 퍼블릭 IP 확인 → AWS 보안 그룹에 22번 포트 임시 오픈
+      - name: get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Add GitHub IP to AWS
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      # B) Blue/Green 배포: SSH 한 번의 액션에서 새 컨테이너 실행, 헬스체크, Nginx 업데이트, 이전 컨테이너 제거
+      - name: Blue-Green Deploy in one script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          script: |
+            # 1) 현재 실행 중인 컨테이너 확인 (이름이 blue 또는 green인 컨테이너)
+            CURRENT_CONTAINER=$(docker ps --filter "name=blue\|green" --format "{{.Names}}")
+            echo "현재 컨테이너: $CURRENT_CONTAINER"
+            
+            # 2) 새 배포 대상 결정 (Blue/Green 전환)
+            if [ -z "$CURRENT_CONTAINER" ]; then
+              echo "현재 실행 중인 컨테이너가 없습니다. Blue/Green 배포를 초기화합니다."
+              TARGET="blue"
+              TARGET_PORT="8081"
+            else
+              if [ "$CURRENT_CONTAINER" = "blue" ]; then
+                TARGET="green"
+                TARGET_PORT="8082"
+              else
+                TARGET="blue"
+                TARGET_PORT="8081"
+              fi
+            fi
+            echo "새 컨테이너 배포 대상: $TARGET 환경, 포트: $TARGET_PORT"
+            
+            # 3) 최신 이미지 pull
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+
+            # 4) 동일 대상의 이전 컨테이너가 있다면 중지 및 삭제
+            docker stop $TARGET || true
+            docker rm $TARGET || true
+
+            # 5) 새 컨테이너 실행 
+            #    -> DB 및 기타 환경변수는 EC2에 직접 업로드한 .env 파일에서 로드
+            docker run -d --name $TARGET -p ${TARGET_PORT}:${TARGET_PORT} --env-file .env -e SPRING_PROFILES_ACTIVE=$TARGET ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+
+            # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
+            for i in {1..10}; do
+              sleep 5
+              if curl -s "http://localhost:${TARGET_PORT}/actuator/health" | grep "UP" ; then
+                echo "새 컨테이너 헬스체크 성공"
+                # 7) Nginx 프록시 포트 업데이트 (nginx.conf 파일의 proxy_pass 변경)
+                sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:${TARGET_PORT}/" docker/nginx/nginx.conf
+                docker-compose -f docker/nginx/docker-compose-nginx.yml restart
+                # 8) 기존 컨테이너 중지 및 제거
+                if [ ! -z "$CURRENT_CONTAINER" ]; then
+                  docker stop $CURRENT_CONTAINER
+                  docker rm $CURRENT_CONTAINER
                 fi
+                echo "배포 완료"
+                exit 0
+              fi
+            done
+
+            # 9) 헬스체크 실패 시, 로그 출력 후 새 컨테이너 제거
+            echo "새 컨테이너 헬스체크 실패"
+            docker logs $TARGET
+            docker rm -f $TARGET
+            exit 1
+
+      # C) GitHub Actions Runner의 IP를 AWS 보안 그룹에서 제거
+      - name: Remove GitHub IP from AWS Security Group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_SG_ID }} \
+            --protocol tcp --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
                 echo "배포 완료"
                 exit 0
               fi
