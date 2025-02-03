@@ -93,6 +93,8 @@ jobs:
           port: 22
           source: "docker/nginx/."
           target: "~/docker/nginx/"
+          strip-components: 2          # 앞의 2개 폴더 (docker/nginx)를 제거
+          rm: true
 
       # C) Blue/Green 배포 스크립트
       - name: Blue-Green Deploy in one script
