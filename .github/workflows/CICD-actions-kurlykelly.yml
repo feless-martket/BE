@@ -87,7 +87,6 @@ jobs:
       - name: Copy Nginx configuration files to server
         working-directory: docker/nginx
         uses: appleboy/scp-action@master
-        run:
         with:
           host: ${{ secrets.KURLYKELLY_SERVER_IP }}
           username: ${{ secrets.EC2_USERNAME }}
