@@ -57,6 +57,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       # A) GitHub Actions Runner의 퍼블릭 IP 확인 → AWS 보안 그룹에 22번 포트 임시 오픈
       - name: get GitHub IP
         id: ip
