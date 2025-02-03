@@ -76,7 +76,18 @@ jobs:
             --protocol tcp --port 22 \
             --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
-      # B) Blue/Green 배포 스크립트
+      # B) Nginx 설정 파일 전송
+      - name: Copy Nginx configuration files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: 22
+          source: "docker/nginx/*"
+          target: "~/docker/nginx/"
+
+      # C) Blue/Green 배포 스크립트
       - name: Blue-Green Deploy in one script
         uses: appleboy/ssh-action@master
         with:
@@ -116,8 +127,6 @@ jobs:
             docker rm $TARGET || true
 
             # 5) 새 컨테이너 실행
-            #    -> DB/환경변수는 .env에서 가져오고, Redis 관련 변수는 -e로 직접도 가능
-            #    -> --network 옵션으로 Redis와 동일 네트워크 사용(예: my-bridge-network)
             docker run -d \
               --name $TARGET \
               --network my-bridge-network \
@@ -134,8 +143,8 @@ jobs:
               if curl -s "http://localhost:${TARGET_PORT}/actuator/health" | grep "UP" ; then
                 echo "새 컨테이너 헬스체크 성공"
                 # 7) Nginx 프록시 포트 업데이트
-                sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:${TARGET_PORT}/" docker/nginx/nginx.conf
-                docker-compose -f docker/nginx/docker-compose-nginx.yml restart
+                sed -i "s/proxy_pass http:\/\/localhost:[0-9]\+/proxy_pass http:\/\/localhost:${TARGET_PORT}/" ~/docker/nginx/nginx.conf
+                docker-compose -f ~/docker/nginx/docker-compose-nginx.yml restart
 
                 # 8) 기존 컨테이너 중지 및 제거
                 if [ ! -z "$CURRENT_CONTAINER" ]; then
@@ -153,7 +162,7 @@ jobs:
             docker rm -f $TARGET
             exit 1
 
-      # C) GitHub Actions Runner IP를 AWS 보안 그룹에서 제거
+      # D) GitHub Actions Runner IP를 AWS 보안 그룹에서 제거
       - name: Remove GitHub IP from AWS Security Group
         if: always()
         run: |
