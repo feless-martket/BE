@@ -24,7 +24,7 @@ spring:
 
   data:
     redis:
-    host: ${SPRING_REDIS_HOST:localhost}
+    host: ${SPRING_REDIS_HOST:redis-server}
     port: ${SPRING_REDIS_PORT:6379}
 
   mail:
@@ -58,3 +58,5 @@ cloud:
 
 server:
   port: 8080 # dev 환경 기본 포트
+
+
