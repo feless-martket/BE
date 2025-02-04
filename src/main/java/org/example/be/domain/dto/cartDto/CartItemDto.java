@@ -12,6 +12,7 @@ public class CartItemDto {
     private String productName;
     private int quantity;
     private int price;
+    private Integer discount;
     private String imgURL;
 }
 
