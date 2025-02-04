@@ -129,6 +129,7 @@ jobs:
             --name $TARGET \
             --network my-bridge-network \
             -p ${TARGET_PORT}:${TARGET_PORT} \
+            -v /home/ec2-user/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
             --env-file .env \
             -e SPRING_PROFILES_ACTIVE=$TARGET \
             -e SERVER_PORT=${TARGET_PORT} \

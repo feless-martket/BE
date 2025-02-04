@@ -21,6 +21,7 @@ spring:
 
   jwt:
     secret: ${JWT_SECRET_KEY}
+
   data:
     redis:
       host: kurlykelly-cache-server.gaatel.ng.0001.apn2.cache.amazonaws.com
@@ -57,7 +58,6 @@ cloud:
 
 server:
   port: 8080 # dev 환경 기본 포트
-
 
 management:
   endpoints:

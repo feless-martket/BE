@@ -2,12 +2,18 @@ spring:
   config:
     activate:
       on-profile: green
+  data:
+    redis:
+      host: kurlykelly-cache-server.gaatel.ng.0001.apn2.cache.amazonaws.com
+      port: 6379
+
   datasource:
     # 프로덕션 DB 연결 정보 (환경변수로 주입)
     url: ${MYSQL_URL}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   servlet:
     multipart:
       location: /var/upload
