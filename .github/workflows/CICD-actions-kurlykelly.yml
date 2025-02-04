@@ -58,7 +58,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # A) GitHub Actions Runner의 퍼블릭 IP 확인 → AWS 보안 그룹에 22번 포트 임시 오픈
+
+      # A) GitHub Actions Runner의 퍼블릭 IP 확인 → AWS 보안 그룹 인바운드 설정을 위해
       - name: get GitHub IP
         id: ip
         uses: haythem/public-ip@v1.2
@@ -82,19 +83,6 @@ jobs:
 
       - name: List nginx folder
         run: ls -al docker/nginx/
-
-#      # B) Nginx 설정 파일 전송
-#      - name: Copy Nginx configuration files to server
-#        uses: appleboy/scp-action@master
-#        with:
-#          host: ${{ secrets.KURLYKELLY_SERVER_IP }}
-#          username: ${{ secrets.EC2_USERNAME }}
-#          password: ${{ secrets.EC2_PASSWORD }}
-#          port: 22
-#          source: "docker/nginx/*"
-#          target: "~/docker/nginx/"
-#          strip-components: 3         # 앞의 2개 폴더 (docker/nginx)를 제거
-#          rm: true
 
       # C) Blue/Green 배포 스크립트
       - name: Blue-Green Deploy in one script
@@ -125,18 +113,18 @@ jobs:
               fi
             fi
             echo "새 컨테이너 배포 대상: $TARGET, 포트: $TARGET_PORT"
-
-            # (추가) 혹시나 유저 정의 네트워크를 사용한다면, 없으면 생성
-            # docker network ls | grep my-bridge-network || docker network create my-bridge-network
-
-            # 3) 최신 이미지 pull
+            
+            # (옵션) 필요 시, 네트워크가 없으면 생성
+            docker network inspect my-bridge-network > /dev/null 2>&1 || docker network create my-bridge-network
+            
+            # 3) 최신 이미지 Pull
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
-
-            # 4) 동일 대상의 이전 컨테이너가 있다면 중지 및 삭제
+            
+            # 4) 기존 배포 대상 컨테이너 중지 및 삭제 (있다면)
             docker stop $TARGET || true
             docker rm $TARGET || true
-
-            # 5) 새 컨테이너 실행
+            
+            # 5) 새 컨테이너 실행 (Blue 또는 Green)
             docker run -d \
               --name $TARGET \
               --network my-bridge-network \
@@ -149,41 +137,31 @@ jobs:
             
             echo $SPRING_REDIS_HOST
             echo $SPRING_REDIS_PORT
-
+            
             # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
             for i in {1..10}; do
               sleep 5
-                HEALTH=$(curl -s "http://localhost:${TARGET_PORT}/actuator/health")
-                echo "$HEALTH_JSON"
-
-                if echo "$HEALTH" | grep '"status":"UP"' > /dev/null; then                
+              HEALTH=$(curl -s "http://localhost:${TARGET_PORT}/actuator/health")
+              echo "Health check response: $HEALTH"
+              if echo "$HEALTH" | grep '"status":"UP"' > /dev/null; then
                 echo "새 컨테이너 헬스체크 성공"
             
-                # Nginx 프록시 설정 파일 업데이트 (예: nginx.conf 내 proxy_pass 변경)
-                # 7) Nginx 프록시 포트 업데이트
-                # 여기서는 sed를 이용하여 /home/ec2-user/docker/nginx/nginx.conf 내 proxy_pass를 업데이트한다고 가정합니다.
+                # Nginx 프록시 포트 업데이트: sed 명령어를 이용해 nginx.conf 내 proxy_pass 변경
                 sed -i "s/proxy_pass http:\/\/.*:[0-9]\+/proxy_pass http:\/\/3.34.181.33:${TARGET_PORT}/" ~/docker/nginx/nginx.conf
-                
+            
                 # nginx 컨테이너 재시작 (docker-compose 없이 docker restart 사용)
                 docker restart nginxserver
-
-#                # 8) 기존 컨테이너 중지 및 제거
-#                if [ ! -z "$CURRENT_CONTAINER" ]; then
-#                  docker stop $CURRENT_CONTAINER
-#                  docker rm $CURRENT_CONTAINER
-#                fi
+            
                 echo "배포 완료"
                 exit 0
               fi
             done
-
-            # 9) 헬스체크 실패 시 롤백 로직
+            
             echo "새 컨테이너 헬스체크 실패"
             docker logs $TARGET
             docker rm -f $TARGET
             exit 1
 
-      # D) GitHub Actions Runner IP를 AWS 보안 그룹에서 제거
       - name: Remove GitHub IP from AWS Security Group
         if: always()
         run: |
