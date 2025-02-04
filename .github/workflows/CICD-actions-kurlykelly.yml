@@ -134,8 +134,6 @@ jobs:
             -e SERVER_PORT=${TARGET_PORT} \
             ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
             
-            echo $SPRING_REDIS_HOST
-            echo $SPRING_REDIS_PORT
             
             # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
             for i in {1..10}; do
