@@ -129,7 +129,7 @@ jobs:
             --name $TARGET \
             --network my-bridge-network \
             -p ${TARGET_PORT}:${TARGET_PORT} \
-            --env-file .env \  # (RDS, Mail, AWS creds 등 다른 env 필요시)
+            --env-file .env \
             -e SPRING_PROFILES_ACTIVE=$TARGET \
             -e SERVER_PORT=${TARGET_PORT} \
             your_dockerhub_username/kurlykelly_server:latest
