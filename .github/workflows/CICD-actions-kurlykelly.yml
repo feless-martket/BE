@@ -132,7 +132,7 @@ jobs:
             --env-file .env \
             -e SPRING_PROFILES_ACTIVE=$TARGET \
             -e SERVER_PORT=${TARGET_PORT} \
-            your_dockerhub_username/kurlykelly_server:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
             
             echo $SPRING_REDIS_HOST
             echo $SPRING_REDIS_PORT
