@@ -106,6 +106,7 @@ jobs:
           port: 22
           script: |
             # 1) 현재 실행 중인 컨테이너 확인 (blue 또는 green)
+            echo "Checking for current running container..."
             CURRENT_CONTAINER=$(docker ps --filter "name=blue\|green" --format "{{.Names}}")
             echo "현재 컨테이너: $CURRENT_CONTAINER"
             
@@ -142,24 +143,35 @@ jobs:
               -p ${TARGET_PORT}:${TARGET_PORT} \
               --env-file .env \
               -e SPRING_PROFILES_ACTIVE=$TARGET \
-              -e SPRING_REDIS_HOST=redis-server \
-              -e SPRING_REDIS_PORT=6379 \
+              -e SPRING_REDIS_HOST=${SPRING_REDIS_HOST:-redis-server} \
+              -e SPRING_REDIS_PORT=${SPRING_REDIS_PORT:-6379} \
               ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+            
+            echo $SPRING_REDIS_HOST
+            echo $SPRING_REDIS_PORT
 
             # 6) 새 컨테이너 헬스체크 (최대 10회, 5초 간격)
             for i in {1..10}; do
               sleep 5
-              if curl -s "http://localhost:${TARGET_PORT}/actuator/health" | grep "UP" ; then
-                echo "새 컨테이너 헬스체크 성공"
-                # 7) Nginx 프록시 포트 업데이트
-                sed -i "s/proxy_pass http:\/\/.*:[0-9]\+/proxy_pass http:\/\/3.34.181.33:${TARGET_PORT}/" ~/docker/nginx/nginx.conf
-                docker-compose -f ~/docker/nginx/docker-compose-nginx.yml up -d
+                HEALTH=$(curl -s "http://localhost:${TARGET_PORT}/actuator/health")
+                echo "$HEALTH_JSON"
 
-                # 8) 기존 컨테이너 중지 및 제거
-                if [ ! -z "$CURRENT_CONTAINER" ]; then
-                  docker stop $CURRENT_CONTAINER
-                  docker rm $CURRENT_CONTAINER
-                fi
+                if echo "$HEALTH" | grep '"status":"UP"' > /dev/null; then                
+                echo "새 컨테이너 헬스체크 성공"
+            
+                # Nginx 프록시 설정 파일 업데이트 (예: nginx.conf 내 proxy_pass 변경)
+                # 7) Nginx 프록시 포트 업데이트
+                # 여기서는 sed를 이용하여 /home/ec2-user/docker/nginx/nginx.conf 내 proxy_pass를 업데이트한다고 가정합니다.
+                sed -i "s/proxy_pass http:\/\/.*:[0-9]\+/proxy_pass http:\/\/3.34.181.33:${TARGET_PORT}/" ~/docker/nginx/nginx.conf
+                
+                # nginx 컨테이너 재시작 (docker-compose 없이 docker restart 사용)
+                docker restart nginxserver
+
+#                # 8) 기존 컨테이너 중지 및 제거
+#                if [ ! -z "$CURRENT_CONTAINER" ]; then
+#                  docker stop $CURRENT_CONTAINER
+#                  docker rm $CURRENT_CONTAINER
+#                fi
                 echo "배포 완료"
                 exit 0
               fi

@@ -10,7 +10,6 @@ services:
       - MYSQL_URL=${MYSQL_URL}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-
     ports:
       - "8081:8081"
     restart: always
