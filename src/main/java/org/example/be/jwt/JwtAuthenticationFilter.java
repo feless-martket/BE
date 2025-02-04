@@ -33,7 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        // 만약 요청 경로가 "/api/index.php/v1/config/application"이라면, 이 필터를 적용하지 않음
+        log.info("Request URI: {}", path);
+        // 만약 요청 경로가 "/api/index.php/v1/config/application"이라면, 이
+        // 필터를 적용하지 않음
         if (path.equals("/") || path.equals("/index.html") || path.equals("/api/index.php/v1/config/application")) {
             return true;
         }
