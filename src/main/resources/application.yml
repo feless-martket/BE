@@ -23,8 +23,8 @@ spring:
     secret: ${JWT_SECRET_KEY}
 
   redis:
-    host: ${SPRING_REDIS_HOST:redis-server}
-    port: ${SPRING_REDIS_PORT:6379}
+    host: kurlykelly-cache-server.gaatel.ng.0001.apn2.cache.amazonaws.com
+    port: 6379
 
   mail:
     host: smtp.gmail.com

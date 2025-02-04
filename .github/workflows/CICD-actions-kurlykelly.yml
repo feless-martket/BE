@@ -126,14 +126,13 @@ jobs:
             
             # 5) 새 컨테이너 실행 (Blue 또는 Green)
             docker run -d \
-              --name $TARGET \
-              --network my-bridge-network \
-              -p ${TARGET_PORT}:${TARGET_PORT} \
-              --env-file .env \
-              -e SPRING_PROFILES_ACTIVE=$TARGET \
-              -e SPRING_REDIS_HOST=${SPRING_REDIS_HOST:-redis-server} \
-              -e SPRING_REDIS_PORT=${SPRING_REDIS_PORT:-6379} \
-              ${{ secrets.DOCKERHUB_USERNAME }}/kurlykelly_server:latest
+            --name $TARGET \
+            --network my-bridge-network \
+            -p ${TARGET_PORT}:${TARGET_PORT} \
+            --env-file .env \  # (RDS, Mail, AWS creds 등 다른 env 필요시)
+            -e SPRING_PROFILES_ACTIVE=$TARGET \
+            -e SERVER_PORT=${TARGET_PORT} \
+            your_dockerhub_username/kurlykelly_server:latest
             
             echo $SPRING_REDIS_HOST
             echo $SPRING_REDIS_PORT
