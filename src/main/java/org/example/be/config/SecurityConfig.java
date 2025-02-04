@@ -53,7 +53,9 @@ public class SecurityConfig {
 
         // URL별 접근 권한 설정
         http.authorizeHttpRequests(auth -> auth
-            // 회원가입 및 로그인 API는 모두 접근 가능
+                .requestMatchers("/").permitAll()
+
+                // 회원가입 및 로그인 API는 모두 접근 가능
             .requestMatchers("/users/signup", "/users/login", "/users/logout").permitAll()
             .requestMatchers("/users/email/**", "/users/id/**", "/users/find-id/**", "/users/phone/**", "/users/reset-pw/**").permitAll()
 
