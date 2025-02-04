@@ -2,9 +2,10 @@ spring:
   config:
     activate:
       on-profile: blue
-  redis:
-    host: kurlykelly-cache-server.gaatel.ng.0001.apn2.cache.amazonaws.com
-    port: 6379
+  data:
+    redis:
+      host: kurlykelly-cache-server.gaatel.ng.0001.apn2.cache.amazonaws.com
+      port: 6379
 
   datasource:
     # 프로덕션 DB 연결 정보 (환경변수로 주입)
