@@ -30,18 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * 특정 엔드포인트에 대해서는 JWT 검증을 스킵하기 위해 shouldNotFilter 메서드를 오버라이드합니다.
      */
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        log.info("Request URI: {}", path);
-        // 만약 요청 경로가 "/api/index.php/v1/config/application"이라면, 이
-        // 필터를 적용하지 않음
-        if (path.equals("/") || path.equals("/index.html") || path.equals("/api/index.php/v1/config/application")) {
-            return true;
-        }
-        // 필요하다면 다른 public 엔드포인트도 추가로 체크할 수 있습니다.
-        return false;
-    }
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//        String path = request.getRequestURI();
+//        log.info("Request URI: {}", path);
+//        // 만약 요청 경로가 "/api/index.php/v1/config/application"이라면, 이
+//        // 필터를 적용하지 않음
+//        if (path.equals("/") || path.equals("/index.html") || path.equals("/api/index.php/v1/config/application")) {
+//            return true;
+//        }
+//        // 필요하다면 다른 public 엔드포인트도 추가로 체크할 수 있습니다.
+//        return false;
+//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
