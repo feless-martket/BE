@@ -89,8 +89,12 @@ public class ProductController {
         @RequestParam DiscountStatus discountStatus,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
-        @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
-        return productService.getProductsByDiscountStatus(discountStatus, page, size, direction);
+        @RequestParam(defaultValue = "PRICE") String sortOption,
+        @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
+        return productService.getProductsByDiscountStatus(
+            discountStatus, page, size, sortOption, direction
+        );
     }
 
 }
